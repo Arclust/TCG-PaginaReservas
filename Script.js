@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     const calendar = document.getElementById("calendar");
-    const boton = document.getElementById('BotonVerPerfil');
-    const pantallaPrincipal = document.getElementById('PantallaCalendario');
+    const botonperfil = document.getElementById('BotonVerPerfil');
+    const botoncalendario = document.getElementById('BotonVerCalendario');
+    const pantallaCalendario = document.getElementById('PantallaCalendario');
     const pantallaPerfil = document.getElementById('PantallaPerfil');
     const daysInMonth = 30;  // Suponiendo un mes de 30 días
     const startDay = 6;      // Suponiendo que el mes comienza en un viernes (0 = lunes, 6 = domingo)
@@ -13,9 +14,28 @@ document.addEventListener("DOMContentLoaded", function() {
         calendar.appendChild(emptyElement);
     }
 
-    boton.addEventListener('click', () => {
-        pantallaPrincipal.classList.toggle('oculto');
-        pantallaPerfil.classList.toggle('oculto');
+    botonperfil.addEventListener('click', () => {
+        // Verificamos si la pantallaPerfil ya está oculta
+        if (pantallaPerfil.classList.contains('oculto')) {
+            // Si está oculta, la mostramos y ocultamos la otra
+            pantallaCalendario.classList.add('oculto');
+            pantallaPerfil.classList.remove('oculto');
+        } else {
+            // Si ya está visible, no hacemos nada (opcional: podrías agregar una animación o mensaje)
+            console.log('Ya estás en la pantalla de perfil');
+        }
+    });
+
+    botoncalendario.addEventListener('click', () => {
+        // Verificamos si la pantallaPerfil ya está oculta
+        if (pantallaCalendario.classList.contains('oculto')) {
+            // Si está oculta, la mostramos y ocultamos la otra
+            pantallaPerfil.classList.add('oculto');
+            pantallaCalendario.classList.remove('oculto');
+        } else {
+            // Si ya está visible, no hacemos nada (opcional: podrías agregar una animación o mensaje)
+            console.log('Ya estás en la pantalla de perfil');
+        }
     });
 
 // Crear los días del calendario

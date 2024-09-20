@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     background: #ffffff;
-    color: #333;
+    color: black;
     margin: 0;
     padding: 0;
     text-align: center;
@@ -9,33 +9,25 @@ body {
 
 @font-face {
     font-family: 'FuenteProyecto';
+    color: black;
     src: url(GeometrysoftproBoldn-wJp2.otf);
   }
 
 h1 {
     margin-top: 50px; /* Agrega espacio superior en lugar de usar position */
-    color: #843929;
     font-family: 'FuenteProyecto';
 }
 
 h2 {
     margin-top: 20px; /* Espacio adicional entre el título y el calendario */
-    color: #846729;
     font-family: 'FuenteProyecto';
 }
 
-.esquina-superior-derecha {
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 10px;
-    width: 150px; /* Ajusta el tamaño a tu necesidad */
-    height: auto; /* Mantiene la proporción */
-}
 
 #calendar-container {
-    background-color: #fdd7aa;
+    background-color: #ffe9dd;
     border-radius: 10px;
+    border: 5px solid #d38b7d;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 500px;
     margin: 20px auto; /* Espacio superior e inferior */
@@ -52,7 +44,7 @@ h2 {
 #calendar-header h2 {
     margin: 0;
     font-size: 24px;
-    color: #0073e6;
+    font-family: 'FuenteProyecto';
 }
 
 #calendar-days {
@@ -66,7 +58,7 @@ h2 {
     padding: 10px 0;
     background-color: #f0f0f0;
     border-radius: 5px;
-    color: #555;
+    font-family: 'FuenteProyecto';
 }
 
 #calendar {
@@ -102,17 +94,19 @@ h2 {
 .contenedor-perfil {
     width: 100% absolute;
     height: 200px;
-    background-color: white; /* Fondo blanco para el contenedor */
-    border: 5px solid #975735;
+    background-color:  #ffe9dd; /* Fondo blanco para el contenedor */
+    border: 5px solid #d38b7d;
     position: relative;
     top: 20px;
     border-radius: 10px;
-    margin: 10%;
-}
+    margin-top: 50px;
+    margin-left: 10%;
+    margin-right: 10%;
+}   
   
 .foto-perfil {
     width: 100px;
-    border: 5px solid #975735;
+    border: 5px solid #d38b7d;
     height: 100px;
     border-radius: 50%; /* Para hacerla circular */
     position: absolute;
@@ -121,7 +115,26 @@ h2 {
 }
 
 .contenedor-sup{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #440808;
     height: 180px;
-    border-bottom: 5px solid #975735;
+    border-bottom: 5px solid #d38b7d;
+}
+
+.contenedor-botones{
+    justify-content: right;
+}
+
+.contenedor-ajustado{
+    margin: 20px;
+    height: auto; /* Mantiene la proporción */
+}
+
+.boton-imagen{
+    background-color: #ffffff00;
+    cursor: pointer;
+    border: none;
+    margin: 10%;
 }
