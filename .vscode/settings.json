@@ -1,0 +1,19 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MariaDB",
+            "database": "tecitos",
+            "username": "root",
+            "name": "DatabaseConnection",
+            "group": "Default",
+            "askForPassword": true
+        }
+    ]
+}

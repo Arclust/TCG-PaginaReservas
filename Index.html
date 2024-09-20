@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Página Web</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* CSS básico para el calendario */
+        #calendar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+
+        #calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            width: 100%;
+            text-align: center;
+        }
+
+        .day-name {
+            font-weight: bold;
+        }
+
+        #calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            width: 500px;
+            text-align: center;
+        }
+
+        .day {
+            background-color: #e0e0e0;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .day.empty {
+            background-color: transparent;
+            cursor: default;
+        }
+
+        .day:hover {
+            background-color: #d1d1d1;
+        }
+
+        /* Estilos para los eventos */
+        #event-container {
+            margin: 20px;
+            padding: 20px;
+            width: 500px;
+            background-color: #fdd7aa;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            float: left;
+            font-family: 'FuenteProyecto';
+        }
+
+        #event-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        #event-list li {
+            padding: 20px 0;
+            background-color: rgba(192, 255, 250, 0.582);
+            border-bottom: 1px solid #ccc;
+            background-image: none;
+            background-size: cover;
+            background-blend-mode: color;
+            background-position: center;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            color: black;
+            border: 2px solid rgb(155, 133, 133);
+        }
+
+        #event-list li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor-sup">
+        <!-- Imagen del logotipo -->
+        <button id="BotonVerPerfil">Ver perfil</button>
+        <img src="assets\logotecito.jpg" alt="logotecito" class="esquina-superior-derecha">
+
+        <!-- Encabezados -->
+        <h1>Página de prueba Tea & Coffee Games</h1>
+        <h2>Versión de prueba.</h2>
+    </div>
+    
+    <div id="PantallaCalendario">
+        
+        <!-- Contenedor del calendario -->
+        <div id="calendar-container">
+            <div id="calendar-header">
+                <h2>Septiembre 2024</h2>
+            </div>
+            <div id="calendar-days">
+                <div class="day-name">Lun</div>
+                <div class="day-name">Mar</div>
+                <div class="day-name">Mié</div>
+                <div class="day-name">Jue</div>
+                <div class="day-name">Vie</div>
+                <div class="day-name">Sáb</div>
+                <div class="day-name">Dom</div>
+            </div>
+            <div id="calendar">
+                <!-- Los días se generarán dinámicamente con JavaScript -->
+            </div>
+        </div>
+
+        <!-- Contenedor para los eventos -->
+        <div id="event-container">
+            <h3>Eventos para el día seleccionado</h3>
+            <ul id="event-list">
+                <!-- Los eventos se mostrarán aquí -->
+            </ul>
+        </div>
+    </div>
+    <div id="PantallaPerfil" class="oculto">
+        <div class="contenedor-perfil">
+            <img src="assets\logotecito.jpg" alt="Foto de perfil" class="foto-perfil">
+            <p>Nombre de usuario</p>
+        </div>
+    </div>
+    <!-- Enlace al archivo JavaScript -->
+    <script src="Script.js"></script>
+</body>
+</html>
