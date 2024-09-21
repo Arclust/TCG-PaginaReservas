@@ -69,7 +69,7 @@ h2 {
 
 .day {
     padding: 15px;
-    background-color: #0073e6;
+    background-color:   #0073e6;
     color: rgb(19, 19, 19);
     cursor: pointer;
     text-align: center;
@@ -114,17 +114,18 @@ h2 {
     left: 50px;
 }
 
-.contenedor-sup{
+.contenedor-color{
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #440808;
-    height: 180px;
     border-bottom: 5px solid #d38b7d;
 }
 
 .contenedor-botones{
-    justify-content: right;
+    right: 0;
+    flex-wrap: wrap;
+    margin: 5%;
 }
 
 .contenedor-ajustado{
@@ -136,5 +137,5 @@ h2 {
     background-color: #ffffff00;
     cursor: pointer;
     border: none;
-    margin: 10%;
+    margin: auto;
 }
