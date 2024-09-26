@@ -139,3 +139,24 @@ h2 {
     border: none;
     margin: auto;
 }
+
+.contenedor-botones-eventos {
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.boton-evento {
+    padding: 10px 20px;
+    background-color: #d38b7d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'FuenteProyecto';
+}
+
+.boton-evento:hover {
+    background-color: #b67265;
+}
