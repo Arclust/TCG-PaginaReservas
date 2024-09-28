@@ -174,6 +174,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     console.error('Error al crear la cuenta:', error);
                 });
             }
+            // jajablabla
         } else if (action === '2') {
             const correo_usuario = prompt("Ingrese el correo del usuario a eliminar:");
     
