@@ -2,6 +2,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors'); 
+const bodyParser = require('body-parser');
 const path = require('path');
 const session = require('express-session');  // Necesario para las sesiones
 const passport = require('passport');
@@ -9,6 +10,8 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 // Crear una instancia de la aplicación Express
 const app = express();
+app.use(express.json());
+
 
 // Configurar la sesión para manejar la autenticación
 app.use(session({
@@ -28,8 +31,39 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:3000/auth/google/callback" // Asegúrate de que el callback esté correcto
   },
   function(accessToken, refreshToken, profile, done) {
-    // Aquí puedes manejar el perfil del usuario autenticado
-    return done(null, profile);
+    // Extraer el correo electrónico del perfil
+    const email = profile.emails[0].value;
+    const nombre = profile.displayName;
+
+    // Consultar la base de datos para verificar si el usuario ya existe
+    const query = 'SELECT * FROM usuario WHERE correo_usuario = ?';
+    connection.query(query, [email], (err, results) => {
+      if (err) {
+        return done(err);
+      }
+
+      if (results.length > 0) {
+        // Si el usuario existe, continuar con el proceso de login
+        return done(null, results[0]);
+      } else {
+        // Si el usuario no existe, registrarlo en la base de datos
+        const insertQuery = 'INSERT INTO usuario (nombre_usuario, correo_usuario, tipo_usuario) VALUES (?, ?, ?)';
+        connection.query(insertQuery, [nombre, email, 0], (err, results) => {
+          if (err) {
+            return done(err);
+          }
+
+          // Obtener el usuario recién registrado y continuar con el proceso de login
+          const newUser = {
+            id: results.insertId,
+            nombre_usuario: nombre,
+            correo_usuario: email,
+            tipo_usuario: 0 // Definir el tipo de usuario
+          };
+          return done(null, newUser);
+        });
+      }
+    });
   }
 ));
 
@@ -63,7 +97,8 @@ app.get('/profile', (req, res) => {
   if (!req.isAuthenticated()) {
     return res.redirect('/');
   }
-  res.send(`<h1>Bienvenido ${req.user.displayName}</h1><a href="/logout">Cerrar sesión</a>`);
+  const nombreUsuario = req.user.nombre_usuario || req.user.displayName;
+  res.send(`<h1>Bienvenido ${nombreUsuario}</h1><a href="/logout">Cerrar sesión</a>`);
 });
 
 // Ruta para cerrar sesión
