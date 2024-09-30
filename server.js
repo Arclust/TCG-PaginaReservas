@@ -2,6 +2,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors'); 
+const bodyParser = require('body-parser');
 const path = require('path');
 const session = require('express-session');  // Necesario para las sesiones
 const passport = require('passport');
@@ -9,6 +10,8 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 // Crear una instancia de la aplicación Express
 const app = express();
+app.use(express.json());
+
 
 // Configurar la sesión para manejar la autenticación
 app.use(session({
