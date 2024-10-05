@@ -7,10 +7,17 @@ const path = require('path');
 const session = require('express-session');  // Necesario para las sesiones
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const ejs = require('ejs');
+const authRoutes = require('./routes/auth-routes.js')
+
 
 // Crear una instancia de la aplicación Express
 const app = express();
 app.use(express.json());
+
+app.set('view engine','ejs');
+app.set('auth',authRoutes)
+app.use(express.static(__dirname));
 
 
 // Configurar la sesión para manejar la autenticación
@@ -67,6 +74,12 @@ passport.use(new GoogleStrategy({
   }
 ));
 
+
+// Ruta de prueba para verificar que el servidor esté funcionando
+app.get('/', (req, res) => {
+  res.render('home');
+});
+
 // Serialización y deserialización del usuario para mantener la sesión
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -78,8 +91,16 @@ passport.deserializeUser(function(obj, done) {
 
 app.use(cors());
 
-// Permitir el uso de archivos estáticos como 'index.html'
-app.use(express.static(path.join(__dirname, 'public')));
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+
 
 // Rutas de autenticación con Google
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -94,11 +115,15 @@ app.get('/auth/google/callback',
 
 // Ruta para mostrar perfil solo si el usuario está autenticado
 app.get('/profile', (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.redirect('/');
+  if (req.isAuthenticated()) {
+    res.render('profile', { user: req.user }); 
+  } else {
+    res.redirect('/login');
   }
-  const nombreUsuario = req.user.nombre_usuario || req.user.displayName;
-  res.send(`<h1>Bienvenido ${nombreUsuario}</h1><a href="/logout">Cerrar sesión</a>`);
+});
+
+app.get('/login', (req, res) => {
+  res.render('login'); // Renderiza la vista de inicio de sesión
 });
 
 // Ruta para cerrar sesión
@@ -126,10 +151,7 @@ connection.connect((err) => {
   console.log('Conectado a la base de datos');
 });
 
-// Ruta de prueba para verificar que el servidor esté funcionando
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+
 
 // Ruta para obtener todos los usuarios de la tabla 'usuario'
 app.get('/usuarios', (req, res) => {

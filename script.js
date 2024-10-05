@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
         calendar.appendChild(emptyElement);
     }
 
-    botonperfil.addEventListener('click', () => {
+    /*botonperfil.addEventListener('click', () => {
         pantallaCalendario.classList.add('oculto');
         pantallaPerfil.classList.remove('oculto');
     });
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
     botoncalendario.addEventListener('click', () => {
         pantallaPerfil.classList.add('oculto');
         pantallaCalendario.classList.remove('oculto');
-    });
+    });*/
 
     // Crear los días del calendario
     for (let day = 1; day <= daysInMonth; day++) {
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Funcionalidad para el botón "Crear un Evento"
     botonCrearEvento.addEventListener('click', function() {
-        const tituloEvento = window.prompt("Ingrese el título del evento:");
+        var tituloEvento = window.prompt("Ingrese el título del evento:");
         const descripcionEvento = window.prompt("Ingrese una descripción para el evento:");
         const juegoEvento = window.prompt("Ingrese el juego del evento (ej: Digimon TCG, Dragon Ball TCG):");
         const fechaEvento = window.prompt("Ingrese la fecha del evento en formato AAAA-MM-DD:");
