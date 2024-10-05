@@ -87,6 +87,31 @@
         #event-list li:last-child {
             border-bottom: none;
         }
+        .contenedor-perfil {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 20px auto;
+        }
+
+        .foto-perfil {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }       
+
+        .contenedor-perfil p {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -147,12 +172,18 @@
             </ul>
         </div>
     </div>
+    <!-- Perfil de usuario -->
     <div id="PantallaPerfil" class="oculto">
         <div class="contenedor-perfil">
-            <img src="public\logotecito.jpg" alt="Foto de perfil" class="foto-perfil">
-            <p>Nombre de usuario</p>
-        </div>
-    </div>
+            <div class="foto-perfil-container">
+              <img src="public\logotecito.jpg" alt="Foto de perfil" class="foto-perfil">
+            </div>
+            <div class="informacion-usuario">
+              <br/><br/><br/><br/><br/>
+              <h2>Nombre de usuario</h2>
+              <p>Correo electrónico: <span>correo@ejemplo.com</span></p>
+            </div>
+          </div>
 
     <!-- Enlace al archivo JavaScript -->
     <script src="script.js" type="text/javascript"></script>
