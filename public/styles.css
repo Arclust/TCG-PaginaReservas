@@ -91,18 +91,6 @@ h2 {
     display: none;
 }
 
-.contenedor-perfil {
-    width: 100% absolute;
-    height: 200px;
-    background-color:  #ffe9dd; /* Fondo blanco para el contenedor */
-    border: 5px solid #d38b7d;
-    position: relative;
-    top: 20px;
-    border-radius: 10px;
-    margin-top: 50px;
-    margin-left: 10%;
-    margin-right: 10%;
-}   
   
 .foto-perfil {
     width: 100px;
@@ -120,6 +108,7 @@ h2 {
     align-items: center;
     background-color: #440808;
     border-bottom: 5px solid #d38b7d;
+    height: 150px;
 }
 
 .contenedor-botones{
@@ -138,6 +127,7 @@ h2 {
     cursor: pointer;
     border: none;
     margin: auto;
+    height: 50px;
 }
 
 .contenedor-botones-eventos {
@@ -159,4 +149,30 @@ h2 {
 
 .boton-evento:hover {
     background-color: #b67265;
+}
+.contenedor-perfil {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    height: 350px;
+    margin: 20px auto;
+}
+
+.foto-perfil {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}       
+
+.contenedor-perfil p {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
