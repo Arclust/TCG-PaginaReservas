@@ -37,6 +37,7 @@ passport.use(new GoogleStrategy({
     clientSecret: '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',
     callbackURL: "http://localhost:3000/auth/google/callback" // Asegúrate de que el callback esté correcto
   },
+  
   function(accessToken, refreshToken, profile, done) {
     // Extraer el correo electrónico del perfil
     const email = profile.emails[0].value;
@@ -150,11 +151,25 @@ connection.connect((err) => {
   }
   console.log('Conectado a la base de datos');
 });
-
+/*
+// Ruta para obtener eventos de un usuario especifico
+app.get('/eventos/:fecha', (req, res) => {
+  const fecha = req.params.fecha; 
+  const query = 'SELECT * FROM evento WHERE DATE(fecha_evento) = ?'; 
+  connection.query(query, [fecha], (err, results) => {
+    if (err) {
+      console.error('Error ejecutando la consulta:', err);
+      res.status(500).send('Error en la consulta');
+      return;
+    }
+    res.json(results);
+  });
+})*/
 
 
 // Ruta para obtener todos los usuarios de la tabla 'usuario'
 app.get('/usuarios', (req, res) => {
+
   const query = 'SELECT * FROM usuario'; 
   connection.query(query, (err, results) => {
     if (err) {
@@ -177,6 +192,7 @@ app.get('/eventos/:fecha', (req, res) => {
       return;
     }
     res.json(results);
+    console.log (req.user);
   });
 });
 
