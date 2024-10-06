@@ -151,8 +151,8 @@ connection.connect((err) => {
   }
   console.log('Conectado a la base de datos');
 });
-/*
-// Ruta para obtener eventos de un usuario especifico
+
+//Obtener los eventos de una fecha especifica
 app.get('/eventos/:fecha', (req, res) => {
   const fecha = req.params.fecha; 
   const query = 'SELECT * FROM evento WHERE DATE(fecha_evento) = ?'; 
@@ -164,7 +164,7 @@ app.get('/eventos/:fecha', (req, res) => {
     }
     res.json(results);
   });
-})*/
+});
 
 
 // Ruta para obtener todos los usuarios de la tabla 'usuario'
@@ -192,11 +192,10 @@ app.get('/eventos/:fecha', (req, res) => {
       return;
     }
     res.json(results);
-    console.log (req.user);
   });
 });
 
-// Inscribir usuario a un evento
+// Inscribir usuario a un evento desde admin
 app.post('/inscribir/:ID_evento', (req, res) => {
   const { correo_usuario, ID_evento } = req.body;
   
@@ -210,6 +209,31 @@ app.post('/inscribir/:ID_evento', (req, res) => {
     res.json({ message: 'Usuario inscrito correctamente' });
   });
 });
+
+// Inscribir usuario a un evento desde usuario
+app.post('/inscribir-usuario/:ID_evento', (req, res) => {
+  if (req.isAuthenticated()) {
+    const { correo_usuario } = req.body;
+    const { ID_evento } = req.params;
+
+    // Validar que ambos parámetros existan
+    if (!correo_usuario || !ID_evento) {
+      return res.status(400).json({ error: 'Correo de usuario y ID de evento son requeridos' });
+    }
+
+    const query = 'INSERT INTO participacion (correo_usuario, ID_evento) VALUES (?, ?)';
+    connection.query(query, [correo_usuario, ID_evento], (err, results) => {
+      if (err) {
+        console.error('Error al inscribir usuario:', err);
+        return res.status(500).json({ error: 'Error al inscribir usuario' });
+      }
+      return res.json({ message: 'Usuario inscrito correctamente' });
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
+
 
 // Crear un nuevo evento
 app.post('/crear-evento', (req, res) => {
@@ -264,6 +288,15 @@ app.delete('/eliminar-usuario/:correo_usuario', (req, res) => {
       res.json({ message: 'Usuario eliminado correctamente' });
     }
   });
+});
+
+// Obtener información del usuario autenticado
+app.get('/api/usuario', (req, res) => {
+  if (req.isAuthenticated()) {
+    res.json(req.user); // Retorna los datos del usuario en sesión
+  } else {
+    res.status(401).json({ error: 'No autenticado' });
+  }
 });
 
 // Iniciar el servidor en el puerto 3000
