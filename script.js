@@ -39,58 +39,102 @@ document.addEventListener("DOMContentLoaded", function() {
         pantallaCalendario.classList.remove('oculto');
     });*/
 
-    // Crear los días del calendario
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayElement = document.createElement("div");
-        dayElement.className = "day";
-        dayElement.textContent = day;
+// Crear los días del calendario
+for (let day = 1; day <= daysInMonth; day++) {
+    const dayElement = document.createElement("div");
+    dayElement.className = "day";
+    dayElement.textContent = day;
 
-        dayElement.addEventListener("click", function() {
-            const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    dayElement.addEventListener("click", function() {
+        const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-            fetch(`http://localhost:3000/eventos/${selectedDate}`)
-                .then(response => response.json())
-                .then(data => {
-                    eventList.innerHTML = '';  // Limpiar eventos previos
-                    
-                    if (data.length > 0) {
-                        data.forEach(evento => {
-                            const eventItem = document.createElement("li");
-                            eventItem.textContent = `Evento: ${evento.titulo_evento}, Descripción: ${evento.descripcion_evento}`;
-                            eventList.appendChild(eventItem);
+        fetch(`http://localhost:3000/eventos/${selectedDate}`)
+            .then(response => response.json())
+            .then(data => {
+                eventList.innerHTML = '';  // Limpiar eventos previos
+                
+                if (data.length > 0) {
+                    data.forEach(evento => {
+                        const eventItem = document.createElement("li");
+                        eventItem.textContent = `Evento: ${evento.titulo_evento}, Descripción: ${evento.descripcion_evento}`;
 
-                            // Establecer fondo basado en el tipo de evento
-                            switch (evento.juego_evento) {
-                                case 'Digimon TCG':
-                                    eventItem.style.backgroundImage = 'url(assets/DigimonBG.jpg)';
-                                    break;
-                                case 'Dragon Ball TCG':
-                                    eventItem.style.backgroundImage = 'url(assets/DragonballBG.jpg)';
-                                    break;
-                                case 'Pokemon TCG':
-                                    eventItem.style.backgroundImage = 'url(assets/PokemonBG.jpg)';
-                                    break;
-                                case 'One Piece TCG':
-                                    eventItem.style.backgroundImage = 'url(assets/OnepieceBG.jpg)';
-                                    break;
-                                default:
-                                    eventItem.style.backgroundColor = '#f0f0f0'; // Fondo genérico
-                                    break;
-                            }
+                        // Crear botón de inscripción
+                        const button = document.createElement("button");
+                        button.className = "inscribir-evento";
+                        button.textContent = "Inscribirse";
+                        button.dataset.idEvento = evento.ID_evento;  // Establecer el ID del evento en el atributo data-id-evento
+
+                        // Agregar evento de clic al botón de inscripción
+                        button.addEventListener("click", function() {
+                            fetch('/api/usuario') // Obtener datos del usuario autenticado
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('No autenticado'); // Manejar el caso no autenticado
+                                    }
+                                    return response.json();
+                                })
+                                .then(user => {
+                                    const correo_usuario = user.correo_usuario; // Obtener el correo del usuario autenticado
+
+                                    // Inscribir al usuario
+                                    fetch(`http://localhost:3000/inscribir-usuario/${evento.ID_evento}`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({ correo_usuario: correo_usuario }),
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        alert(data.message || 'Inscripción realizada con éxito.');
+                                    })
+                                    .catch(error => {
+                                        console.error('Error al inscribir al evento:', error);
+                                    });
+                                })
+                                .catch(error => {
+                                    alert('Debes iniciar sesión para inscribirte en un evento.'); // Mensaje de error para no autenticado
+                                    console.error(error);
+                                });
                         });
-                    } else {
-                        const noEvents = document.createElement("li");
-                        noEvents.textContent = "No hay eventos para este día.";
-                        eventList.appendChild(noEvents);
-                    }
-                })
-                .catch(err => {
-                    console.error('Error fetching data:', err);
-                });
-        });
 
-        calendar.appendChild(dayElement);
-    }
+                        // Agregar el botón de inscripción al elemento del evento
+                        eventItem.appendChild(button);
+
+                        // Establecer fondo basado en el tipo de evento
+                        switch (evento.juego_evento) {
+                            case 'Digimon TCG':
+                                eventItem.style.backgroundImage = 'url(assets/DigimonBG.jpg)';
+                                break;
+                            case 'Dragon Ball TCG':
+                                eventItem.style.backgroundImage = 'url(assets/DragonballBG.jpg)';
+                                break;
+                            case 'Pokemon TCG':
+                                eventItem.style.backgroundImage = 'url(assets/PokemonBG.jpg)';
+                                break;
+                            case 'One Piece TCG':
+                                eventItem.style.backgroundImage = 'url(assets/OnepieceBG.jpg)';
+                                break;
+                            default:
+                                eventItem.style.backgroundColor = '#f0f0f0'; // Fondo genérico
+                                break;
+                        }
+
+                        eventList.appendChild(eventItem);
+                    });
+                } else {
+                    const noEvents = document.createElement("li");
+                    noEvents.textContent = "No hay eventos para este día.";
+                    eventList.appendChild(noEvents);
+                }
+            })
+            .catch(err => {
+                console.error('Error fetching data:', err);
+            });
+    });
+
+    calendar.appendChild(dayElement);
+}
 
     // Funcionalidad para el botón "Inscribir a un Evento"
     botonInscribirEvento.addEventListener('click', function() {
@@ -144,6 +188,20 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }
     });
+
+    // Agregar evento de clic a los botones de inscribir evento
+  document.querySelectorAll('.inscribir-evento').forEach(function(button) {
+    button.addEventListener('click', function() {
+      const idEvento = button.dataset.idEvento;
+      $.post('/inscribir-usuario/' + idEvento, function(data) {
+        if (data.error) {
+          console.error('Error al inscribir usuario:', data.error);
+        } else {
+          console.log('Usuario inscrito correctamente');
+        }
+      });
+    });
+  });
 
     // Funcionalidad para el botón "Administrar Cuentas"
     botonAdministrarCuentas.addEventListener('click', function() {
