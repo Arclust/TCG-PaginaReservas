@@ -56,24 +56,34 @@ for (let day = 1; day <= daysInMonth; day++) {
                 if (data.length > 0) {
                     data.forEach(evento => {
                         const eventItem = document.createElement("li");
-                        eventItem.textContent = `Evento: ${evento.titulo_evento}, Descripción: ${evento.descripcion_evento}`;
+                        eventItem.textContent = `Evento: ${evento.titulo_evento}`;
+                        eventItem.style.paddingLeft = '20px';
 
-                        // Crear botón de inscripción
+                        // Crear botón de ver detalles del evento
                         const button = document.createElement("button");
-                        button.className = "inscribir-evento";
-                        button.textContent = "Inscribirse";
+                        button.className = "verdetalles-evento";
+                        button.textContent = "Ver detalles";
+                        button.style.float = "right";
+                        button.style.marginRight = '2%';
                         button.dataset.idEvento = evento.ID_evento;  // Establecer el ID del evento en el atributo data-id-evento
 
                         // Agregar evento de clic al botón de inscripción
                         button.addEventListener("click", function() {
-                            fetch('/api/usuario') // Obtener datos del usuario autenticado
+                            fetch('/evento', {
+                                method: 'get'
+                            }) // Obtener datos del usuario autenticado
                                 .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error('No autenticado'); // Manejar el caso no autenticado
+                                    if (response.ok) {
+                                        window.location.href = '/evento'; // Manejar el caso no autenticado
+                                    } else {
+                                        console.error('Error al realizar la solicitud');
                                     }
-                                    return response.json();
                                 })
-                                .then(user => {
+                                .catch(error => {
+                                    // Manejar errores de red
+                                    console.error('Error de red:', error);
+                                });
+                                /*.then(user => {
                                     const correo_usuario = user.correo_usuario; // Obtener el correo del usuario autenticado
 
                                     // Inscribir al usuario
@@ -95,7 +105,7 @@ for (let day = 1; day <= daysInMonth; day++) {
                                 .catch(error => {
                                     alert('Debes iniciar sesión para inscribirte en un evento.'); // Mensaje de error para no autenticado
                                     console.error(error);
-                                });
+                                });*/
                         });
 
                         // Agregar el botón de inscripción al elemento del evento
@@ -104,16 +114,16 @@ for (let day = 1; day <= daysInMonth; day++) {
                         // Establecer fondo basado en el tipo de evento
                         switch (evento.juego_evento) {
                             case 'Digimon TCG':
-                                eventItem.style.backgroundImage = 'url(assets/DigimonBG.jpg)';
+                                eventItem.style.backgroundImage = 'url(DigimonBG.jpg)';
                                 break;
                             case 'Dragon Ball TCG':
-                                eventItem.style.backgroundImage = 'url(assets/DragonballBG.jpg)';
+                                eventItem.style.backgroundImage = 'url(DragonballBG.jpg)';
                                 break;
                             case 'Pokemon TCG':
-                                eventItem.style.backgroundImage = 'url(assets/PokemonBG.jpg)';
+                                eventItem.style.backgroundImage = 'url(PokemonBG.jpg)';
                                 break;
                             case 'One Piece TCG':
-                                eventItem.style.backgroundImage = 'url(assets/OnepieceBG.jpg)';
+                                eventItem.style.backgroundImage = 'OnepieceBG.jpg)';
                                 break;
                             default:
                                 eventItem.style.backgroundColor = '#f0f0f0'; // Fondo genérico
