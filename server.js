@@ -40,8 +40,10 @@ passport.use(new GoogleStrategy({
   
   function(accessToken, refreshToken, profile, done) {
     // Extraer el correo electrónico del perfil
-    const email = profile.emails[0].value;
-    const nombre = profile.displayName;
+    const email = profile.emails?.[0].value || '';
+    const nombre = profile.displayName || '';
+    const foto = profile.photos?.[0].value || '';
+    const numero = profile.phoneNumbers?.[0].value || '';
 
     // Consultar la base de datos para verificar si el usuario ya existe
     const query = 'SELECT * FROM usuario WHERE correo_usuario = ?';
@@ -55,8 +57,8 @@ passport.use(new GoogleStrategy({
         return done(null, results[0]);
       } else {
         // Si el usuario no existe, registrarlo en la base de datos
-        const insertQuery = 'INSERT INTO usuario (nombre_usuario, correo_usuario, tipo_usuario) VALUES (?, ?, ?)';
-        connection.query(insertQuery, [nombre, email, 0], (err, results) => {
+        const insertQuery = 'INSERT INTO usuario (nombre_usuario, correo_usuario, tipo_usuario, numero_usuario, urlfoto_usuario) VALUES (?, ?, ?, ?, ?)';
+        connection.query(insertQuery, [nombre, email, 0, numero, foto], (err, results) => {
           if (err) {
             return done(err);
           }
@@ -66,7 +68,9 @@ passport.use(new GoogleStrategy({
             id: results.insertId,
             nombre_usuario: nombre,
             correo_usuario: email,
-            tipo_usuario: 0 // Definir el tipo de usuario
+            tipo_usuario: 0, // Definir el tipo de usuario
+            numero_usuario: numero,
+            urlfoto_usuario: foto
           };
           return done(null, newUser);
         });
@@ -78,7 +82,7 @@ passport.use(new GoogleStrategy({
 
 // Ruta de prueba para verificar que el servidor esté funcionando
 app.get('/', (req, res) => {
-  res.render('home');
+  res.render('index');
 });
 
 // Serialización y deserialización del usuario para mantener la sesión
@@ -104,7 +108,7 @@ passport.deserializeUser((user, done) => {
 
 
 // Rutas de autenticación con Google
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email', 'phone'] }));
 
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login' }),
@@ -121,7 +125,7 @@ app.get('/profile', (req, res) => {
   } else {
     res.redirect('/login');
   }
-});
+})
 
 app.get('/login', (req, res) => {
   res.render('login'); // Renderiza la vista de inicio de sesión
@@ -288,6 +292,10 @@ app.delete('/eliminar-usuario/:correo_usuario', (req, res) => {
       res.json({ message: 'Usuario eliminado correctamente' });
     }
   });
+});
+
+app.get('/evento', (req, res) => {
+  res.render('event');
 });
 
 // Obtener información del usuario autenticado

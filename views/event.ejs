@@ -7,15 +7,6 @@
     <link rel="icon" href="logotecito.png">
     <link rel="stylesheet" href="/styles.css">
     <style>
-        /* CSS básico para el calendario */
-        #calendar-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 20px;
-            z-index: 2;
-        }
-
         #calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -24,7 +15,7 @@
         }
 
         .day-name {
-            background-color: #ffc29f;
+            background-color: #adff76;
             font-weight: bold;
         }
 
@@ -37,7 +28,7 @@
         }
 
         .day {
-            background-color: #ffd29f;
+            background-color: #adff76;
             padding: 10px;
             cursor: pointer;
             border-radius: 4px;
@@ -52,20 +43,6 @@
             background-color: #ffd29f;
         }
 
-        /* Estilos para los eventos */
-        #event-container {
-            margin: 20px;
-            padding: 20px;
-            width: 500px;
-            background-color: #ffe9dd;
-            border: 5px solid #d38b7d;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            float: left;
-            font-family: 'FuenteProyecto';
-            z-index: 2;
-        }
-
         #event-list {
             list-style-type: none;
             padding-left: 0;
@@ -73,7 +50,7 @@
 
         #event-list li {
             padding: 20px 0;
-            background-color: rgba(255, 226, 192, 0.582);
+            background-color: rgba(255, 255, 255, 0.582);
             border-bottom: 1px solid #ccc;
             background-image: none;
             background-size: cover;
@@ -82,23 +59,10 @@
             border-radius: 10px;
             margin-bottom: 10px;
             color: black;
-            border: 2px solid rgb(155, 133, 133);
         }
 
         #event-list li:last-child {
             border-bottom: none;
-        }
-        .contenedor-perfil {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            background-color: #f7f7f7;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            margin: 20px auto;
         }
 
         .foto-perfil {
@@ -127,13 +91,13 @@
             <a href="/auth/google" class="boton-enlace">Iniciar sesión con Google</a>
         </div>
     </div>
-
-    <div class="contenedor-interfaz" align-items="default">
-        <span>No tienes cueta iniciada :(</span>
-        <a href="/auth/google">Iniciar sesión con Google</a>
-
-    <!-- Enlace al archivo JavaScript -->
-    <script src="script.js" type="text/javascript"></script>
+    <div class="contenedor-interfaz">
+        <div class="detallesSUB-container">
+            <div class="detallesBG-container"></div>
+            <div class="detalles-container"></div>
+            <!-- Enlace al archivo JavaScript -->
+            <script src="script.js" type="text/javascript"></script>
+        </div>
     </div>
 </body>
 </html>

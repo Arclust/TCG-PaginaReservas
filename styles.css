@@ -1,17 +1,14 @@
 body {
     font-family: Arial, sans-serif;
     background: #ffffff;
-    color: black;
     margin: 0;
-    padding: 0;
-    text-align: center;
 }
 
 @font-face {
     font-family: 'FuenteProyecto';
-    color: black;
+    color: #333;
     src: url(GeometrysoftproBoldn-wJp2.otf);
-  }
+}
 
 h1 {
     margin-top: 50px; /* Agrega espacio superior en lugar de usar position */
@@ -23,17 +20,78 @@ h2 {
     font-family: 'FuenteProyecto';
 }
 
-
-#calendar-container {
-    background-color: #ffe9dd;
+.detallesSUB-container{
+    display: flex;
+    justify-content: center;
+    width: 800px;
+    background-color: #dfffaa;
     border-radius: 10px;
-    border: 5px solid #d38b7d;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    margin: 20px auto; /* Espacio superior e inferior */
+    margin: 2%;/* Espacio superior e inferior */
     padding: 20px;
-    float: left;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.detallesBG-container{
+    position: absolute;
+    width: 700px;
+    min-height: 300px;
+    background-color: #1d1d1d;
+    border-radius: 10px;
+    margin: 2%;/* Espacio superior e inferior */
+    background-image: url(DigimonBG.jpg);
+    background-size: 100%;
+    background-position: center;
+}
+
+.detalles-container{
+    position: relative;
+    margin-top: 150px;
+    margin-bottom: 5%;
+    width: 700px;
+    min-height: 300px;
+    background-color: #ffffff;
+    border-radius: 10px;
     font-family: 'FuenteProyecto';
+}
+
+.event-container{
+    width: 500px;
+    background-color: #dfffaa;
+    border-radius: 10px;
+    margin: 2%;/* Espacio superior e inferior */
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: 'FuenteProyecto';
+}
+
+.calendar-container{
+    background-color: #dfffaa;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    margin: 2%; /* Espacio superior e inferior */
+    padding: 20px;
+    font-family: 'FuenteProyecto';
+}
+
+.contenedor-botones-eventos {
+    margin: 2%;
+    gap: 10px;
+    width: 500px;
+}
+
+.boton-evento {
+    padding: 10px 20px;
+    background-color: #adff76;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'FuenteProyecto';
+    box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.1);
+}
+
+.boton-evento:hover {
+    background-color: #b67265;
 }
 
 #calendar-header {
@@ -92,21 +150,21 @@ h2 {
 }
 
 .contenedor-perfil {
-    width: 100% absolute;
-    height: 200px;
-    background-color:  #ffe9dd; /* Fondo blanco para el contenedor */
-    border: 5px solid #d38b7d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     position: relative;
-    top: 20px;
+    background-color:  #dfffaa;
+    padding: 20px;
     border-radius: 10px;
-    margin-top: 50px;
-    margin-left: 10%;
-    margin-right: 10%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    margin: 20px auto;
 }   
   
 .foto-perfil {
     width: 100px;
-    border: 5px solid #d38b7d;
+    border: 5px solid #adff76;
     height: 100px;
     border-radius: 50%; /* Para hacerla circular */
     position: absolute;
@@ -118,14 +176,21 @@ h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #440808;
-    border-bottom: 5px solid #d38b7d;
+    background-color: #ffbb27;
+    box-shadow: 0 10px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contenedor-interfaz{
+    display: flex;
+    justify-content: center;
 }
 
 .contenedor-botones{
     right: 0;
     flex-wrap: wrap;
     margin: 5%;
+    font-size: 20px;
+    font-family: 'FuenteProyecto';
 }
 
 .contenedor-ajustado{
@@ -140,23 +205,7 @@ h2 {
     margin: auto;
 }
 
-.contenedor-botones-eventos {
-    margin: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.boton-evento {
-    padding: 10px 20px;
-    background-color: #d38b7d;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'FuenteProyecto';
-}
-
-.boton-evento:hover {
-    background-color: #b67265;
+.boton-enlace {
+    text-decoration: none;
+    color: #333;
 }
