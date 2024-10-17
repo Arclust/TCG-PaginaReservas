@@ -69,12 +69,13 @@ for (let day = 1; day <= daysInMonth; day++) {
 
                         // Agregar evento de clic al botón de inscripción
                         button.addEventListener("click", function() {
-                            fetch('/evento', {
+                            fetch(`http://localhost:3000/evento/${evento.ID_evento}`, {
                                 method: 'get'
                             }) // Obtener datos del usuario autenticado
                                 .then(response => {
                                     if (response.ok) {
-                                        window.location.href = '/evento'; // Manejar el caso no autenticado
+                                        const nuevaURL = `http://localhost:3000/evento/${evento.ID_evento}`;
+                                        window.location.href = nuevaURL;
                                     } else {
                                         console.error('Error al realizar la solicitud');
                                     }
