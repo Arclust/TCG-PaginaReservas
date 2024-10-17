@@ -45,8 +45,21 @@ for (let day = 1; day <= daysInMonth; day++) {
     dayElement.className = "day";
     dayElement.textContent = day;
 
+    const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+    fetch(`http://localhost:3000/eventos/${selectedDate}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.length > 0) {
+            dayElement.classList.add('event-day'); // Añadir clase si hay eventos
+        }
+    })
+    .catch(err => {
+        console.error('Error fetching data:', err);
+    });
+
     dayElement.addEventListener("click", function() {
-        const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        
 
         fetch(`http://localhost:3000/eventos/${selectedDate}`)
             .then(response => response.json())
@@ -74,7 +87,9 @@ for (let day = 1; day <= daysInMonth; day++) {
                             }) // Obtener datos del usuario autenticado
                                 .then(response => {
                                     if (response.ok) {
-                                        window.location.href = `http://localhost:3000/evento/${evento.ID_evento}`;
+
+                                         window.location.href = `http://localhost:3000/evento/${evento.ID_evento}`;
+
                                     } else {
                                         console.error('Error al realizar la solicitud');
                                     }

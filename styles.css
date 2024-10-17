@@ -221,3 +221,9 @@ h2 {
     width: 300px;
     margin: 20px;
 }   
+
+.event-day {
+    background-color: #ffff00;
+    border: 2px solid #ffd700; 
+    color: #333; 
+}
