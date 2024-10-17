@@ -91,7 +91,7 @@
             <a href="/auth/google" class="boton-enlace">Iniciar sesión con Google</a>
         </div>
     </div>
-    <div>
+    <div class="contenedor-interfaz">
         <div class="contenedor-perfil">
             <div class="foto-perfil-container">
                 <img src="<%= user.urlfoto_usuario %>" alt="Foto de perfil" class="foto-perfil">
@@ -104,6 +104,9 @@
                 <p><span><%= user.numero_usuario %></span></p>
             </div>
         </div>
+        <% for (let i = 0; i < totalCredenciales; i++) { %>
+            <div class="contenedor-credencial"></div>
+        <% } %>
 
     <!-- Enlace al archivo JavaScript -->
     <script src="script.js" type="text/javascript"></script>
