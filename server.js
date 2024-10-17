@@ -294,7 +294,8 @@ app.delete('/eliminar-usuario/:correo_usuario', (req, res) => {
   });
 });
 
-app.get('/evento', (req, res) => {
+app.get('/evento/:id', (req, res) => {
+  console.log(req.params);
   res.render('event');
 });
 
