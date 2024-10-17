@@ -119,13 +119,25 @@ app.get('/auth/google/callback',
 );
 
 // Ruta para mostrar perfil solo si el usuario está autenticado
-app.get('/profile', (req, res) => {
+app.get('/profile', async (req, res) => {
   if (req.isAuthenticated()) {
-    res.render('profile', { user: req.user }); 
+    try {
+      const correo = req.user.correo_usuario;
+      const [results] = await connection.promise().query('SELECT COUNT(*) AS total_credenciales FROM credencial WHERE correo_usuario = ?', [correo]);
+      const totalCredenciales = results[0].total_credenciales;
+      const data = {
+        user: req.user,
+        totalCredenciales: totalCredenciales
+      };
+      res.render('profile', data);  // Renderizar la vista perfil con el total
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al obtener las credenciales' });
+    }
   } else {
     res.redirect('/login');
   }
-})
+});
 
 app.get('/login', (req, res) => {
   res.render('login'); // Renderiza la vista de inicio de sesión
@@ -312,4 +324,17 @@ app.get('/api/usuario', (req, res) => {
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
+
+app.get('/credenciales', async (req, res) => {
+  const { correo } = req.query;
+
+  try {
+    const [results] = await pool.promise().query('SELECT COUNT(*) as total_credenciales FROM credenciales WHERE correo_usuario = ?', [correo]);
+    const total = results[0].total_credenciales;
+    res.json({ total_credenciales: total });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener el conteo de credenciales' });
+  }
 });

@@ -87,7 +87,9 @@ for (let day = 1; day <= daysInMonth; day++) {
                             }) // Obtener datos del usuario autenticado
                                 .then(response => {
                                     if (response.ok) {
+
                                          window.location.href = `http://localhost:3000/evento/${evento.ID_evento}`;
+
                                     } else {
                                         console.error('Error al realizar la solicitud');
                                     }
