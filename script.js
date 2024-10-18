@@ -69,7 +69,7 @@ for (let day = 1; day <= daysInMonth; day++) {
                 if (data.length > 0) {
                     data.forEach(evento => {
                         const eventItem = document.createElement("li");
-                        eventItem.textContent = `Evento: ${evento.titulo_evento}`;
+                        eventItem.textContent = `${evento.titulo_evento}`;
                         eventItem.style.paddingLeft = '20px';
 
                         // Crear botón de ver detalles del evento
@@ -125,7 +125,7 @@ for (let day = 1; day <= daysInMonth; day++) {
                         eventItem.appendChild(button);
 
                         // Establecer fondo basado en el tipo de evento
-                        switch (evento.juego_evento) {
+                        /*switch (evento.juego_evento) {
                             case 'Digimon TCG':
                                 eventItem.style.backgroundImage = 'url(DigimonBG.jpg)';
                                 break;
@@ -141,7 +141,7 @@ for (let day = 1; day <= daysInMonth; day++) {
                             default:
                                 eventItem.style.backgroundColor = '#f0f0f0'; // Fondo genérico
                                 break;
-                        }
+                        }*/
 
                         eventList.appendChild(eventItem);
                     });
