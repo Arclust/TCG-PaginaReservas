@@ -115,16 +115,32 @@
         <div class="detallesSUB-container">
             <div class="detallesBG-container"></div>
             <div class="detalles-container">
-                <form action="procesar_formulario.php" method="post">
-                    <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre"><br><br>   
+                <form id="formulario_creacion" action="/create" method="POST">
+                    <label for="titulo_evento">Nombre:</label>
+                    <input type="text" id="titulo_evento" name="titulo_evento" required><br><br>
+
+                    <label for="juego_evento">Juego o actividad:</label>
+                    <input type="text" id="juego_evento" name="juego_evento" required><br><br>
             
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email"><br><br>   
-            
-                    <label for="mensaje">Mensaje:</label>
-                    <textarea id="mensaje" name="mensaje"></textarea><br><br>
-                    <input type="submit" value="Enviar">
+                    <label for="descripcion_evento">Bases del evento:</label>
+                    <textarea id="descripcion_evento" name="descripcion_evento" required></textarea><br><br>
+
+                    <label for="fecha_evento">Fecha:</label>
+                    <input type="date" id="fecha_evento" name="fecha_evento" required><br><br>
+
+                    <label for="cupos_evento">Cupos:</label>
+                    <input type="number" id="cupos_evento" name="cupos_evento" required><br><br>
+                    
+                    <label for="precio_evento">Precio:</label>
+                    <input type="number" id="precio_evento" name="precio_evento" required><br><br>
+
+                    <label for="repetir_evento">¿Repetir semanalmente?</label>
+                    <select id="text" name="repetir_evento" required>
+                        <option value="0">No</option>
+                        <option value="1">Si</option>
+                    </select>
+                    <br>
+                    <button type="submit">Crear evento</button>
                 </form>
             </div>
         </div>

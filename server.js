@@ -8,7 +8,8 @@ const session = require('express-session');  // Necesario para las sesiones
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const ejs = require('ejs');
-const authRoutes = require('./routes/auth-routes.js')
+const authRoutes = require('./routes/auth-routes.js');
+const { connect } = require('http2');
 
 
 // Crear una instancia de la aplicación Express
@@ -231,6 +232,28 @@ app.post('/inscribir/:ID_evento', (req, res) => {
   });
 });
 
+app.use(express.urlencoded({ extended: false }));
+
+app.get('/create', (req, res) => {
+  res.render('create'); // Renderiza la vista de creacion
+});
+
+app.post('/create', async (req,res) =>  {
+  const { titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento } = req.body;
+  console.log(req.body)
+  
+  const query = 'INSERT INTO evento (titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento) VALUES (?, ?, ?, ?, ?, ?, ?)';
+  
+  connection.query(query, [titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento], (err, results) => {
+    if (err) {
+      console.error('Error al crear evento:', err);
+      res.status(500).json({ error: 'Error al crear evento' });
+      return;
+    }
+    res.json({ message: 'Evento creado correctamente' });
+  });
+});
+
 // Inscribir usuario a un evento desde usuario
 app.post('/inscribir-usuario/:ID_evento', (req, res) => {
   if (req.isAuthenticated()) {
@@ -253,10 +276,6 @@ app.post('/inscribir-usuario/:ID_evento', (req, res) => {
   } else {
     res.redirect('/login');
   }
-});
-
-app.get('/create', (req, res) => {
-  res.render('create'); // Renderiza la vista de creacion
 });
 
 
