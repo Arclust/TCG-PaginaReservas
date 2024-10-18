@@ -256,27 +256,29 @@ app.post('/create', async (req,res) =>  {
 
 // Inscribir usuario a un evento desde usuario
 app.post('/inscribir-usuario/:ID_evento', (req, res) => {
-  if (req.isAuthenticated()) {
-    const { correo_usuario } = req.body;
-    const { ID_evento } = req.params;
+  const { ID_evento } = req.params;
 
-    // Validar que ambos parámetros existan
-    if (!correo_usuario || !ID_evento) {
-      return res.status(400).json({ error: 'Correo de usuario y ID de evento son requeridos' });
+  // Verifica si el usuario está autenticado
+  if (!req.user) {
+    // Si el usuario no está autenticado, redirige o envía un mensaje de error
+    return res.status(401).send('Debes iniciar sesión para inscribirte en el evento.');
+  }
+
+  const correo_usuario = req.user.correo_usuario;
+
+  // Inserta la participación en la base de datos
+  const query = 'INSERT INTO participacion (correo_usuario, ID_evento) VALUES (?, ?)';
+  connection.query(query, [correo_usuario, ID_evento], (err) => {
+    if (err) {
+      console.error('Error al inscribir al usuario:', err);
+      return res.status(500).send('Error al inscribir al usuario');
     }
 
-    const query = 'INSERT INTO participacion (correo_usuario, ID_evento) VALUES (?, ?)';
-    connection.query(query, [correo_usuario, ID_evento], (err, results) => {
-      if (err) {
-        console.error('Error al inscribir usuario:', err);
-        return res.status(500).json({ error: 'Error al inscribir usuario' });
-      }
-      return res.json({ message: 'Usuario inscrito correctamente' });
-    });
-  } else {
-    res.redirect('/login');
-  }
+    // Redirige o muestra un mensaje de éxito
+    res.send('Te has inscrito exitosamente al evento.');
+  });
 });
+
 
 
 // Crear un nuevo evento
@@ -344,19 +346,29 @@ app.get('/evento/:id', async (req, res) => {
     const evento = results1;
     console.log(evento);
 
-    if (evento && evento.length > 0) {
-      // Pasa los datos del evento en un objeto a la vista
-      res.render('event', { evento: evento[0] }); // Enviar el primer resultado como un objeto a la vista
-    } else {
-      res.status(404).send('Evento no encontrado');
-    }
+    const query = 'SELECT * FROM evento WHERE ID_evento = ?';
+    connection.query(query, [eventId], (err, results) => {
+      if (err) {
+        console.error('Error al obtener el evento:', err);
+        return res.status(500).send('Error al obtener el evento');
+      }
+
+      if (results.length === 0) {
+        return res.status(404).send('Evento no encontrado');
+      }
+
+      // Renderiza la vista del evento y pasa el evento y el usuario autenticado
+      res.render('event', {
+        evento: results[0],
+        user: req.user || null // Pasa el usuario si está autenticado, de lo contrario pasa null
+      });
+    });
   } catch (error) {
-    console.error('Error al obtener el evento:', error);
-    res.status(500).send('Error del servidor');
+    console.error('Error en la consulta:', error);
+    res.status(500).send('Error en la consulta');
   }
 });
 
-app.get
 
 // Obtener información del usuario autenticado
 app.get('/api/usuario', (req, res) => {
