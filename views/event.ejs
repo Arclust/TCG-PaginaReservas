@@ -122,6 +122,14 @@
                     <div class="event-game">Juego: <%= evento.juego_evento %></div>
                     <div class="event-date">Fecha del evento: <%= evento.fecha_evento.toLocaleString() %></div>
                     <div class="event-price">Precio: $<%= evento.precio_evento %></div>
+                    <form action="/inscribir-usuario/<%= evento.ID_evento %>" method="POST">
+                        <button type="submit">Inscribirse al Evento</button>
+                    </form>
+                    
+                    <!-- Mensaje para usuarios no logueados -->
+                    <% if (!user) { %>
+                        <p>Por favor, inicia sesión para inscribirte en el evento.</p>
+                    <% } %>
                 </div>
             </div>
         </div>
