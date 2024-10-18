@@ -340,6 +340,11 @@ app.get('/evento/:id', async (req, res) => {
   const eventId = req.params.id;
   console.log(eventId);
 
+  // Verificar si el usuario está autenticado
+  if (!req.isAuthenticated()) {
+    return res.render('login'); // Si no está autenticado, renderizar la vista de login
+  }
+
   try {
     // Consulta la base de datos
     const [results1] = await connection.promise().query('SELECT * FROM evento WHERE ID_evento = ?', [eventId]);
