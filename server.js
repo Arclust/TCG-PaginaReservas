@@ -353,3 +353,16 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
+app.get('/credenciales', async (req, res) => {
+  const { correo } = req.query;
+
+  try {
+    const [results] = await pool.promise().query('SELECT COUNT(*) as total_credenciales FROM credenciales WHERE correo_usuario = ?', [correo]);
+    const total = results[0].total_credenciales;
+    res.json({ total_credenciales: total });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener el conteo de credenciales' });
+  }
+});
