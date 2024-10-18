@@ -311,10 +311,29 @@ app.delete('/eliminar-usuario/:correo_usuario', (req, res) => {
   });
 });
 
-app.get('/evento/:id', (req, res) => {
-  console.log(req.params);
-  res.render('event');
+app.get('/evento/:id', async (req, res) => {
+  const eventId = req.params.id;
+  console.log(eventId);
+
+  try {
+    // Consulta la base de datos
+    const [results1] = await connection.promise().query('SELECT * FROM evento WHERE ID_evento = ?', [eventId]);
+    const evento = results1;
+    console.log(evento);
+
+    if (evento && evento.length > 0) {
+      // Pasa los datos del evento en un objeto a la vista
+      res.render('event', { evento: evento[0] }); // Enviar el primer resultado como un objeto a la vista
+    } else {
+      res.status(404).send('Evento no encontrado');
+    }
+  } catch (error) {
+    console.error('Error al obtener el evento:', error);
+    res.status(500).send('Error del servidor');
+  }
 });
+
+
 
 // Obtener información del usuario autenticado
 app.get('/api/usuario', (req, res) => {
