@@ -104,12 +104,26 @@
                 <p><span><%= user.numero_usuario %></span></p>
             </div>
         </div>
-        <% for (let i = 0; i < totalCredenciales; i++) { %>
-            <div class="contenedor-credencial"></div>
-        <% } %>
-
-    <!-- Enlace al archivo JavaScript -->
-    <script src="script.js" type="text/javascript"></script>
+        <div>
+            <% for (let i = 0; i < credenciales.length; i++) { %>
+                <div class="contenedor-credencial">
+                    <h3><%= credenciales[i].juego_credencial %></h3>
+                    <p><%= credenciales[i].numero_credencial %></p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+    <div class="contenedor-interfaz">
+        <div class="columna">
+            <% for (let i = 0; i < compras.length; i++) { %>
+                <div class="event-container">
+                    <h3><%= compras[i].descripcion_compra %></h3>
+                    <p><%= compras[i].fecha_compra %></p>
+                    <p>$<%= compras[i].monto_compra %></p>
+                    <p><%= compras[i].URL_boleta_compra %></p>
+                </div>
+            <% } %>
+        </div>
     </div>
 </body>
 </html>

@@ -123,12 +123,17 @@ app.get('/profile', async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       const correo = req.user.correo_usuario;
-      const [results] = await connection.promise().query('SELECT COUNT(*) AS total_credenciales FROM credencial WHERE correo_usuario = ?', [correo]);
-      const totalCredenciales = results[0].total_credenciales;
+      const [results1] = await connection.promise().query('SELECT * FROM credencial WHERE correo_usuario = ?', [correo]);
+      const [results2] = await connection.promise().query('SELECT * FROM compra WHERE correo_usuario = ?', [correo]);
+      const credenciales = results1;
+      const compras = results2;
       const data = {
         user: req.user,
-        totalCredenciales: totalCredenciales
+        credenciales: credenciales,
+        compras: compras
       };
+      console.log(data.compras);
+      console.log(data.credenciales);
       res.render('profile', data);  // Renderizar la vista perfil con el total
     } catch (error) {
       console.error(error);
