@@ -255,6 +255,10 @@ app.post('/inscribir-usuario/:ID_evento', (req, res) => {
   }
 });
 
+app.get('/create', (req, res) => {
+  res.render('create'); // Renderiza la vista de creacion
+});
+
 
 // Crear un nuevo evento
 app.post('/crear-evento', (req, res) => {
@@ -333,7 +337,7 @@ app.get('/evento/:id', async (req, res) => {
   }
 });
 
-
+app.get
 
 // Obtener información del usuario autenticado
 app.get('/api/usuario', (req, res) => {
