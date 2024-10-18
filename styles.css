@@ -227,3 +227,20 @@ h2 {
     border: 2px solid #ffd700; 
     color: #333; 
 }
+
+.contenedor-credencial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    background-color:  #dfffaa;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    max-height: 120px;
+    margin: 20px;
+}   
+
+.columna {
+    flex-direction: column;
+}

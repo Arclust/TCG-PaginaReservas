@@ -123,12 +123,17 @@ app.get('/profile', async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       const correo = req.user.correo_usuario;
-      const [results] = await connection.promise().query('SELECT COUNT(*) AS total_credenciales FROM credencial WHERE correo_usuario = ?', [correo]);
-      const totalCredenciales = results[0].total_credenciales;
+      const [results1] = await connection.promise().query('SELECT * FROM credencial WHERE correo_usuario = ?', [correo]);
+      const [results2] = await connection.promise().query('SELECT * FROM compra WHERE correo_usuario = ?', [correo]);
+      const credenciales = results1;
+      const compras = results2;
       const data = {
         user: req.user,
-        totalCredenciales: totalCredenciales
+        credenciales: credenciales,
+        compras: compras
       };
+      console.log(data.compras);
+      console.log(data.credenciales);
       res.render('profile', data);  // Renderizar la vista perfil con el total
     } catch (error) {
       console.error(error);
@@ -250,6 +255,10 @@ app.post('/inscribir-usuario/:ID_evento', (req, res) => {
   }
 });
 
+app.get('/create', (req, res) => {
+  res.render('create'); // Renderiza la vista de creacion
+});
+
 
 // Crear un nuevo evento
 app.post('/crear-evento', (req, res) => {
@@ -306,10 +315,29 @@ app.delete('/eliminar-usuario/:correo_usuario', (req, res) => {
   });
 });
 
-app.get('/evento/:id', (req, res) => {
-  console.log(req.params);
-  res.render('event');
+app.get('/evento/:id', async (req, res) => {
+  const eventId = req.params.id;
+  console.log(eventId);
+
+  try {
+    // Consulta la base de datos
+    const [results1] = await connection.promise().query('SELECT * FROM evento WHERE ID_evento = ?', [eventId]);
+    const evento = results1;
+    console.log(evento);
+
+    if (evento && evento.length > 0) {
+      // Pasa los datos del evento en un objeto a la vista
+      res.render('event', { evento: evento[0] }); // Enviar el primer resultado como un objeto a la vista
+    } else {
+      res.status(404).send('Evento no encontrado');
+    }
+  } catch (error) {
+    console.error('Error al obtener el evento:', error);
+    res.status(500).send('Error del servidor');
+  }
 });
+
+app.get
 
 // Obtener información del usuario autenticado
 app.get('/api/usuario', (req, res) => {

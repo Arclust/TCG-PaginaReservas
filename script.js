@@ -87,9 +87,7 @@ for (let day = 1; day <= daysInMonth; day++) {
                             }) // Obtener datos del usuario autenticado
                                 .then(response => {
                                     if (response.ok) {
-
                                          window.location.href = `http://localhost:3000/evento/${evento.ID_evento}`;
-
                                     } else {
                                         console.error('Error al realizar la solicitud');
                                     }
@@ -185,7 +183,7 @@ for (let day = 1; day <= daysInMonth; day++) {
     });
 
     // Funcionalidad para el botón "Crear un Evento"
-    botonCrearEvento.addEventListener('click', function() {
+   /* botonCrearEvento.addEventListener('click', function() {
         var tituloEvento = window.prompt("Ingrese el título del evento:");
         const descripcionEvento = window.prompt("Ingrese una descripción para el evento:");
         const juegoEvento = window.prompt("Ingrese el juego del evento (ej: Digimon TCG, Dragon Ball TCG):");
@@ -212,7 +210,7 @@ for (let day = 1; day <= daysInMonth; day++) {
                 console.error('Error al crear el evento:', error);
             });
         }
-    });
+    });*/
 
     // Agregar evento de clic a los botones de inscribir evento
   document.querySelectorAll('.inscribir-evento').forEach(function(button) {
