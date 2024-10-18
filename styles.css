@@ -1,3 +1,4 @@
+css
 body {
     font-family: Arial, sans-serif;
     background: #ffffff;
@@ -159,7 +160,7 @@ h2 {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 300px;
-    margin: 20px;
+    margin: 20px auto;
 }   
   
 .foto-perfil {
@@ -186,11 +187,13 @@ h2 {
 }
 
 .contenedor-botones{
+    
     right: 0;
     flex-wrap: wrap;
     margin: 5%;
     font-size: 20px;
     font-family: 'FuenteProyecto';
+    
 }
 
 .contenedor-ajustado{
@@ -206,14 +209,26 @@ h2 {
 }
 
 .boton-enlace {
+    padding: 10px 20px;
+    background-color: #adff76;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'FuenteProyecto';
+    box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.1);
     text-decoration: none;
     color: #333;
 }
+.boton-enlace:hover {
+    background-color: #de8383;
+    color: #333;
+}
 
-.contenedor-credencial {
+.contenedor-perfil {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
     background-color:  #dfffaa;
     padding: 20px;
     border-radius: 10px;
@@ -243,4 +258,20 @@ h2 {
 
 .columna {
     flex-direction: column;
+}
+
+.boton-editar {
+    padding: 10px 20px;
+    background-color: #adff76;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'FuenteProyecto';
+    box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: #333;
+}
+.boton-editar:hover {
+    background-color: #de8383;
+    color: #333;
 }

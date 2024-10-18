@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Este es tu perfil :D - Tea Coffee and Games: Reservas</title>
+    <title>Tea Coffee and Games: Reservas</title>
     <link rel="icon" href="logotecito.png">
     <link rel="stylesheet" href="/styles.css">
     <style>
@@ -69,14 +69,22 @@
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            margin-bottom: 10px;
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
         }       
 
         .contenedor-perfil p {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            width: 100%;
+            height: 10%;
+            display: flex;
+            flex-direction: flex-start;
+            justify-content: center;
+            align-items: flex-start;
+            margin: -5px auto;
         }
+
     </style>
 </head>
 <body>
@@ -97,13 +105,13 @@
                 <img src="<%= user.urlfoto_usuario %>" alt="Foto de perfil" class="foto-perfil">
             </div>
             <div class="informacion-usuario">
-                <br/>
+                <br/><br/><br/><br/><br/>
                 <h2><%= user ? user.nombre_usuario : 'Usuario' %></h2>
-                <br/>
                 <p><span><%= user.correo_usuario %></span></p>
                 <p><span><%= user.numero_usuario %></span></p>
+                <h3 href="/edit" class="boton-editar">editar perfil</h3>
+                <br/>
             </div>
-            
         </div>
         <div>
             <% for (let i = 0; i < credenciales.length; i++) { %>
