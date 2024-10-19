@@ -45,13 +45,15 @@ h2 {
 
 .detalles-container{
     position: relative;
-    margin-top: 150px;
-    margin-bottom: 5%;
-    width: 700px;
-    min-height: 300px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    font-family: 'FuenteProyecto';
+    width: 400px;
+    background: #24303c;
+    padding: 30px;
+    margin: auto;
+    margin-top: 100px;
+    border-radius: 4px;
+    font-family: 'calibri';
+    color: white;
+    box-shadow: 7px 13px 37px #000;
 }
 
 .event-container{
