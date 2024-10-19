@@ -155,7 +155,7 @@ for (let day = 1; day <= daysInMonth; day++) {
                 console.error('Error fetching data:', err);
             });
     });
-
+            
     calendar.appendChild(dayElement);
 }
 
