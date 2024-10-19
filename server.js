@@ -255,20 +255,17 @@ app.post('/create', async (req,res) =>  {
 });
 
 // Inscribir usuario a un evento desde usuario
-app.post('/inscribir-usuario/:ID_evento', (req, res) => {
-  const { ID_evento } = req.params;
-
-  // Verifica si el usuario está autenticado
-  if (!req.user) {
-    // Si el usuario no está autenticado, redirige o envía un mensaje de error
-    return res.status(401).send('Debes iniciar sesión para inscribirte en el evento.');
-  }
-
-  const correo_usuario = req.user.correo_usuario;
+app.post('/inscribir-usuario/:ID_evento', async (req, res) => {
+  const data = [
+    req.user.correo_usuario,
+    req.params.ID_evento,
+    req.body.credencial_inscripcion
+  ];
+  console.log(data);
 
   // Inserta la participación en la base de datos
-  const query = 'INSERT INTO participacion (correo_usuario, ID_evento) VALUES (?, ?)';
-  connection.query(query, [correo_usuario, ID_evento], (err) => {
+  const query = 'INSERT INTO participacion (correo_usuario, ID_evento, numero_credencial) VALUES (?, ?, ?)';
+  connection.query(query, data, (err) => {
     if (err) {
       console.error('Error al inscribir al usuario:', err);
       return res.status(500).send('Error al inscribir al usuario');
@@ -337,19 +334,24 @@ app.delete('/eliminar-usuario/:correo_usuario', (req, res) => {
 });
 
 app.get('/evento/:id', async (req, res) => {
-  const eventId = req.params.id;
-  console.log(eventId);
-
-  // Verificar si el usuario está autenticado
   if (!req.isAuthenticated()) {
     return res.render('login'); // Si no está autenticado, renderizar la vista de login
   }
+  
+  
+  const eventId = req.params.id;
+  const correo = req.user.correo_usuario;
+  console.log(eventId);
+
+  // Verificar si el usuario está autenticado
+  
 
   try {
     // Consulta la base de datos
     const [results1] = await connection.promise().query('SELECT * FROM evento WHERE ID_evento = ?', [eventId]);
-    const evento = results1;
-    console.log(evento);
+    const [results2] = await connection.promise().query('SELECT * FROM credencial WHERE correo_usuario = ?', [correo]);
+
+    console.log(results2);
 
     const query = 'SELECT * FROM evento WHERE ID_evento = ?';
     connection.query(query, [eventId], (err, results) => {
@@ -361,10 +363,11 @@ app.get('/evento/:id', async (req, res) => {
       if (results.length === 0) {
         return res.status(404).send('Evento no encontrado');
       }
-
+      console.log(req.user);
       // Renderiza la vista del evento y pasa el evento y el usuario autenticado
       res.render('event', {
-        evento: results[0],
+        evento: results1[0],
+        credenciales: results2,
         user: req.user || null // Pasa el usuario si está autenticado, de lo contrario pasa null
       });
     });
