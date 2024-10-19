@@ -122,6 +122,20 @@
                     <div class="event-game">Juego: <%= evento.juego_evento %></div>
                     <div class="event-date">Fecha del evento: <%= evento.fecha_evento.toLocaleString() %></div>
                     <div class="event-price">Precio: $<%= evento.precio_evento %></div>
+                    <form action="/inscribir-usuario/<%= evento.ID_evento %>" method="POST">
+                        <label for="credencial_inscripcion">¿Cual es tu credencial?</label>
+                        <select id="number" name="credencial_inscripcion" required>
+                            <% for (let i = 0; i < credenciales.length; i++) { %>
+                                <option value="<%= credenciales[i].numero_credencial %>"><%= credenciales[i].juego_credencial %></option>
+                            <% } %>
+                        </select>
+                        <button type="submit">Inscribirse al Evento</button>
+                    </form>
+                    
+                    <!-- Mensaje para usuarios no logueados -->
+                    <% if (!user) { %>
+                        <p>Por favor, inicia sesión para inscribirte en el evento.</p>
+                    <% } %>
                 </div>
             </div>
         </div>
