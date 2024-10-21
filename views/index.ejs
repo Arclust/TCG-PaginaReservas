@@ -47,8 +47,11 @@
             font-size: 24px;
             font-family: 'FuenteProyecto';
         }
-        
+
         /*FIN DE CUERPO CALENDARIO*/
+
+        /*INICIO BOTONES DIAS*/
+
 
         .day-name {
             padding: 10px 0;
@@ -62,7 +65,9 @@
             background-color: #adff76;
             padding: 10px;
             cursor: pointer;
+            text-align: center;
             border-radius: 4px;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
         .day.empty {
@@ -73,6 +78,14 @@
         .day:hover {
             background-color: #ffd29f;
         }
+        /*COLOR REAL INSTITUCIONAL*/
+        .event-day {
+            background-color: #f6a626;
+            border: 2px solid #f6a626; 
+            color: #333; 
+        }
+
+        /*FIN BOTONES DIA*/
 
         #event-list {
             list-style-type: none;
