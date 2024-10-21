@@ -67,16 +67,6 @@ h2 {
     font-family: 'FuenteProyecto';
 }
 
-.calendar-container{
-    background-color: #dfffaa;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 500px;
-    margin: 2%; /* Espacio superior e inferior */
-    padding: 20px;
-    font-family: 'FuenteProyecto';
-}
-
 .contenedor-botones-eventos {
     margin: 2%;
     gap: 10px;
@@ -95,37 +85,6 @@ h2 {
 
 .boton-evento:hover {
     background-color: #b67265;
-}
-
-#calendar-header {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-#calendar-header h2 {
-    margin: 0;
-    font-size: 24px;
-    font-family: 'FuenteProyecto';
-}
-
-#calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.day-name {
-    padding: 10px 0;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    font-family: 'FuenteProyecto';
-}
-
-#calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
 }
 
 .day {

@@ -7,16 +7,16 @@
     <link rel="icon" href="/logotecito.png">
     <link rel="stylesheet" href="/styles.css">
     <style>
+
+        /*INICIO CUERPO DE CALENDARIO*/
+
         #calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
+            margin-bottom: 10px;
             width: 100%;
-            text-align: center;
-        }
-
-        .day-name {
-            background-color: #adff76;
             font-weight: bold;
+            text-align: center;
         }
 
         #calendar {
@@ -25,6 +25,37 @@
             gap: 5px;
             width: 500px;
             text-align: center;
+        }
+
+        #calendar-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .calendar-container{
+            background-color: #dfffaa;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            margin: 2%; /* Espacio superior e inferior */
+            padding: 20px;
+            font-family: 'FuenteProyecto';
+        }
+
+        #calendar-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-family: 'FuenteProyecto';
+        }
+        
+        /*FIN DE CUERPO CALENDARIO*/
+
+        .day-name {
+            padding: 10px 0;
+            background-color: #adff76;
+            font-weight: bold;
+            border-radius: 5px;
+            font-family: 'FuenteProyecto';
         }
 
         .day {
@@ -63,31 +94,6 @@
 
         #event-list li:last-child {
             border-bottom: none;
-        }
-        .contenedor-perfil {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            background-color: #f7f7f7;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            margin: 20px auto;
-        }
-
-        .foto-perfil {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin-bottom: 10px;
-        }       
-
-        .contenedor-perfil p {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
         }
     </style>
 </head>
