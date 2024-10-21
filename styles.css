@@ -47,13 +47,14 @@ h2 {
 .detalles-container{
     position: relative;
     width: 400px;
-    background: #24303c;
+    background: #dfffaa;;
     padding: 30px;
     margin: auto;
+    font-family: 'FuenteProyecto';
     margin-top: 100px;
     border-radius: 4px;
     font-family: 'calibri';
-    color: white;
+    color: black;
     box-shadow: 7px 13px 37px #000;
 }
 
@@ -187,7 +188,7 @@ h2 {
     background: #228B22;
     border: none;
     padding: 12px;
-    color: white;
+    color: black;
     margin: 16px 0;
     font-size: 16px;
 }
@@ -195,14 +196,14 @@ h2 {
 /*CONTROLES DENTRO DE FORMULARIOS*/       
 .controls {
     width: 95%;
-    background: #24303c;
+    background: white;
     padding: 10px;
     border-radius: 4px;
     margin-bottom: 5px;
     border: 1px solid #dfffaa;
     font-family: 'calibri';
     font-size: 18px;
-    color: white;
+    color: black;
 }
 
 /*CONTENEDOR QUE AYUDA A CENTRAR INFORMACION*/

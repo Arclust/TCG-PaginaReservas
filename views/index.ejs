@@ -159,13 +159,14 @@
             </div>
         </div>
         <div>
-            <!-- Botones de evento -->
-            <div class="contenedor-botones-eventos">
-                <button id="BotonCrearEvento" class="boton-evento">
-                    <a href="/create" >Crear evento</a>
-                </button>
-                <button id="BotonAdministrarCuentas" class="boton-evento">Administrar Cuentas</button>
-            </div>
+            <% if (permisos) { %>
+                <!-- Botones de evento -->
+                <div class="contenedor-botones-eventos">
+                    <a href="/create" class="boton-enlace">Crear evento</a>
+                    <button id="BotonAdministrarCuentas" class="boton-evento">Administrar Cuentas</button>
+                </div>
+            <% } %>
+            
             <!-- Contenedor para los eventos -->
             <div class="event-container">
                 <h3>Eventos para el día seleccionado</h3>
