@@ -7,7 +7,32 @@
     <link rel="icon" href="/logotecito.png">
     <link rel="stylesheet" href="/styles.css">
     <style>
-    
+    /*CONTENEDOR DE LOGEO*/
+    .contenedor-log {
+        position: relative;
+        width: 400px;
+        background: #24303c;
+        padding: 30px;
+        margin: auto;
+        margin-top: 100px;
+        border-radius: 4px;
+        font-family: 'calibri';
+        color: white;
+        box-shadow: 7px 13px 37px #000;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .contenedor-log a{
+        color: white;
+        text-decoration: none;
+    }
+    .contenedor-log a:hover{
+        color: white;
+        text-decoration: underline;
+    }
+
 
     </style>
 </head>
@@ -24,9 +49,9 @@
         </div>
     </div>
 
-    <div class="contenedor-interfaz" align-items="default">
-        <span>No tienes cuenta iniciada :(</span>
-        <a href="/auth/google">Iniciar sesión con Google</a>
+    <div class="contenedor-log" align-items="default">
+        <h3>No tienes cuenta iniciada : </h3>
+        <h4><a href="/auth/google">¿Iniciar sesión?</a></h4>
 
     <!-- Enlace al archivo JavaScript -->
     <script src="/script.js" type="text/javascript"></script>
