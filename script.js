@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const botonCrearEvento = document.getElementById('BotonCrearEvento');
     const botonAdministrarCuentas = document.getElementById('BotonAdministrarCuentas');
 
+
     // Obtener la fecha actual del sistema
     const today = new Date();
     const currentYear = today.getFullYear();

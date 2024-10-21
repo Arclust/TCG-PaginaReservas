@@ -78,7 +78,7 @@
         .day:hover {
             background-color: #ffd29f;
         }
-        /*COLOR REAL INSTITUCIONAL*/
+        /*REAL COLOR INSTITUCIONAL*/
         .event-day {
             background-color: #f6a626;
             border: 2px solid #f6a626; 
@@ -105,8 +105,18 @@
             color: black;
         }
 
-        #event-list li:last-child {
+        .event-list li:last-child {
             border-bottom: none;
+        }
+
+        .event-container .event-list{
+            width: 100%;
+            background: #086708;
+            border: none;
+            padding: 12px;
+            color: white;
+            margin: 16px 0;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -128,8 +138,13 @@
             <div id="calendar-header">
                 <h2 id="calendar-title"></h2>
             </div>
+
+            <!--
+            BOTON PROXIMO MES CALENDARIO
             <button id="next-month">Mes anterior</button>
             <button id="next-month">Mes Siguiente</button>
+            -->
+            
             <div id="calendar-days">
                 <div class="day-name">Lun</div>
                 <div class="day-name">Mar</div>

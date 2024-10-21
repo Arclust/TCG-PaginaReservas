@@ -17,6 +17,22 @@
             left: 50%;
             transform: translateX(-50%);
         }       
+        .boton-editar-perfil {
+            padding: 10px 20px;
+            background-color: #adff76;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'FuenteProyecto';
+            box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: #333;
+        }
+
+        .boton-editar-perfil:hover {
+            background-color: #de8383;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -41,7 +57,12 @@
                 <h2><%= user ? user.nombre_usuario : 'Usuario' %></h2>
                 <p><span><%= user.correo_usuario %></span></p>
                 <p><span><%= user.numero_usuario %></span></p>
-                <h3 href="/edit" class="boton-editar">editar perfil</h3>
+
+                <!--
+                BOTON EDITAR PERFIL
+                <h3 href="/edit" class="boton-editar-perfil">editar perfil</h3>
+                -->
+                
                 <br/>
             </div>
         </div>
