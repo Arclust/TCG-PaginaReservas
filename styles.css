@@ -181,6 +181,7 @@ h2 {
     flex-direction: column;
 }
 
+/*VISTA DEL BOTON DE INSCRIPCION*/
 .detalles-container .botons {
     width: 100%;
     background: #228B22;
@@ -189,7 +190,9 @@ h2 {
     color: white;
     margin: 16px 0;
     font-size: 16px;
-}       
+}
+
+/*CONTROLES DENTRO DE FORMULARIOS*/       
 .controls {
     width: 95%;
     background: #24303c;
@@ -201,3 +204,11 @@ h2 {
     font-size: 18px;
     color: white;
 }
+
+/*CONTENEDOR QUE AYUDA A CENTRAR INFORMACION*/
+.contenedor-informativo {
+    display: center;
+    align-items: center;
+    position: relative;
+    margin: 0px 0px 50px 0px;
+}  
