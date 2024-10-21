@@ -87,26 +87,6 @@ h2 {
     background-color: #b67265;
 }
 
-.day {
-    padding: 15px;
-    background-color:   #0073e6;
-    color: rgb(19, 19, 19);
-    cursor: pointer;
-    text-align: center;
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.day:hover {
-    background-color: #005bb5;
-    transform: scale(1.05);
-}
-
-.day.empty {
-    background-color: transparent;
-    cursor: default;
-}
-
 .oculto{
     display: none;
 }
@@ -183,12 +163,6 @@ h2 {
     width: 300px;
     margin: 20px;
 }   
-
-.event-day {
-    background-color: #ffff00;
-    border: 2px solid #ffd700; 
-    color: #333; 
-}
 
 .contenedor-credencial {
     display: flex;
