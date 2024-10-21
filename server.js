@@ -11,7 +11,7 @@ const ejs = require('ejs');
 const authRoutes = require('./routes/auth-routes.js');
 const { connect } = require('http2');
 
-
+var permisos = false;
 // Crear una instancia de la aplicación Express
 const app = express();
 app.use(express.json());
@@ -83,7 +83,12 @@ passport.use(new GoogleStrategy({
 
 // Ruta de prueba para verificar que el servidor esté funcionando
 app.get('/', (req, res) => {
-  res.render('index');
+  if (req.isAuthenticated() &&  req.user.tipo_usuario==1){
+    permisos = true;
+  } else {
+    permisos = false;
+  }
+  res.render('index',{permisos});
 });
 
 // Serialización y deserialización del usuario para mantener la sesión

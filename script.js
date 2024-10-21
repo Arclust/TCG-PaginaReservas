@@ -75,7 +75,7 @@ for (let day = 1; day <= daysInMonth; day++) {
 
                         // Crear botón de ver detalles del evento
                         const button = document.createElement("button");
-                        button.className = "verdetalles-evento";
+                        button.className = "boton-enlace";
                         button.textContent = "Ver detalles";
                         button.style.float = "right";
                         button.style.marginRight = '2%';
