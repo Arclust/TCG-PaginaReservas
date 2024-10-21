@@ -181,18 +181,23 @@ h2 {
     flex-direction: column;
 }
 
-.boton-editar {
-    padding: 10px 20px;
-    background-color: #adff76;
+.detalles-container .botons {
+    width: 100%;
+    background: #228B22;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'FuenteProyecto';
-    box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.1);
-    text-decoration: none;
-    color: #333;
-}
-.boton-editar:hover {
-    background-color: #de8383;
-    color: #333;
+    padding: 12px;
+    color: white;
+    margin: 16px 0;
+    font-size: 16px;
+}       
+.controls {
+    width: 95%;
+    background: #24303c;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    border: 1px solid #dfffaa;
+    font-family: 'calibri';
+    font-size: 18px;
+    color: white;
 }

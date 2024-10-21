@@ -8,7 +8,12 @@
     <link rel="stylesheet" href="/styles.css">
     <style>
 
-
+    .detalles-container p {
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-align: center;
+    }
+        
 
     </style>
 </head>
@@ -22,24 +27,22 @@
         </div>
     </div>
     <div class="contenedor-interfaz">
-        <div class="detallesSUB-container">
-            <div class="detallesBG-container"></div>
             <div class="detalles-container">
                 <div class="event-details">
-                    <div class="event-title"><%= evento.titulo_evento %></div>
-                    <div class="event-description"><%= evento.descripcion_evento %></div>
-                    <div class="event-available-spots">Cupos disponibles: <%= evento.cupos_evento %></div>
-                    <div class="event-game">Juego: <%= evento.juego_evento %></div>
-                    <div class="event-date">Fecha del evento: <%= evento.fecha_evento.toLocaleString() %></div>
-                    <div class="event-price">Precio: $<%= evento.precio_evento %></div>
+                    <p type="text" class="event-title"><%= evento.titulo_evento %></p>
+                    <p class="event-description"><%= evento.descripcion_evento %></p>
+                    <p class="event-available-spots">Cupos disponibles: <%= evento.cupos_evento %></p>
+                    <p class="event-game">Juego: <%= evento.juego_evento %></p>
+                    <p class="event-date">Fecha del evento: <%= evento.fecha_evento.toLocaleString() %></p>
+                    <p class="event-price">Precio: $<%= evento.precio_evento %></p>
                     <form action="/inscribir-usuario/<%= evento.ID_evento %>" method="POST">
                         <label for="credencial_inscripcion">¿Cual es tu credencial?</label>
-                        <select id="number" name="credencial_inscripcion" required>
+                        <select class="controls" id="number" name="credencial_inscripcion" required>
                             <% for (let i = 0; i < credenciales.length; i++) { %>
                                 <option value="<%= credenciales[i].numero_credencial %>"><%= credenciales[i].juego_credencial %></option>
                             <% } %>
                         </select>
-                        <button type="submit">Inscribirse al Evento</button>
+                        <button class="botons" type="submit">Inscribirse al Evento</button>
                     </form>
                     
                     <!-- Mensaje para usuarios no logueados -->
