@@ -392,6 +392,15 @@ app.get('/api/usuario', (req, res) => {
   }
 });
 
+// Middleware de manejo de errores
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    error: true,
+    message: err.message || 'Ha ocurrido un error en el servidor'
+  });
+});
+
 // Iniciar el servidor en el puerto 3000
 const PORT = 3000;
 app.listen(PORT, () => {
