@@ -30,16 +30,6 @@ document.addEventListener("DOMContentLoaded", function() {
         calendar.appendChild(emptyElement);
     }
 
-    /*botonperfil.addEventListener('click', () => {
-        pantallaCalendario.classList.add('oculto');
-        pantallaPerfil.classList.remove('oculto');
-    });
-
-    botoncalendario.addEventListener('click', () => {
-        pantallaPerfil.classList.add('oculto');
-        pantallaCalendario.classList.remove('oculto');
-    });*/
-
 // Crear los días del calendario
 for (let day = 1; day <= daysInMonth; day++) {
     const dayElement = document.createElement("div");
