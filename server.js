@@ -226,7 +226,6 @@ app.post('/create', async (req,res) =>  {
       res.status(500).json({ error: 'Error al crear evento' });
       return;
     }
-    res.json({ message: 'Evento creado correctamente' });
   });
 });
 
@@ -281,24 +280,6 @@ app.post('/inscribir-usuario/:ID_evento', async (req, res) => {
   });
 });
 
-
-
-
-
-// Crear un nuevo evento
-app.post('/crear-evento', (req, res) => {
-  const { titulo_evento, descripcion_evento, juego_evento, fecha_evento } = req.body;
-  
-  const query = 'INSERT INTO evento (titulo_evento, descripcion_evento, juego_evento, fecha_evento) VALUES (?, ?, ?, ?)';
-  connection.query(query, [titulo_evento, descripcion_evento, juego_evento, fecha_evento], (err, results) => {
-    if (err) {
-      console.error('Error al crear evento:', err);
-      res.status(500).json({ error: 'Error al crear evento' });
-      return;
-    }
-    res.json({ message: 'Evento creado correctamente' });
-  });
-});
 
 // Crear un nuevo usuario
 app.post('/crear-usuario', (req, res) => {
