@@ -10,6 +10,8 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const ejs = require('ejs');
 const authRoutes = require('./routes/auth-routes.js');
 const { connect } = require('http2');
+const { errorHandler } = require('./utils/errorUtils');
+
 
 var permisos = false;
 // Crear una instancia de la aplicación Express
@@ -125,30 +127,21 @@ app.get('/auth/google/callback',
 );
 
 // Ruta para mostrar perfil solo si el usuario está autenticado
-app.get('/profile', async (req, res) => {
-  if (req.isAuthenticated()) {
-    try {
-      const correo = req.user.correo_usuario;
-      const [results1] = await connection.promise().query('SELECT * FROM credencial WHERE correo_usuario = ?', [correo]);
-      const [results2] = await connection.promise().query('SELECT * FROM compra WHERE correo_usuario = ?', [correo]);
-      const credenciales = results1;
-      const compras = results2;
-      const data = {
-        user: req.user,
-        credenciales: credenciales,
-        compras: compras
-      };
-      console.log(data.compras);
-      console.log(data.credenciales);
-      res.render('profile', data);  // Renderizar la vista perfil con el total
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error al obtener las credenciales' });
-    }
-  } else {
-    res.redirect('/login');
+app.get('/profile', errorHandler(async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/login');
   }
-});
+
+  const correo = req.user.correo_usuario;
+  const [credenciales] = await connection.promise().query('SELECT * FROM credencial WHERE correo_usuario = ?', [correo]);
+  const [compras] = await connection.promise().query('SELECT * FROM compra WHERE correo_usuario = ?', [correo]);
+
+  res.render('profile', {
+    user: req.user,
+    credenciales: credenciales,
+    compras: compras
+  });
+}));
 
 app.get('/login', (req, res) => {
   res.render('login'); // Renderiza la vista de inicio de sesión
@@ -195,18 +188,11 @@ app.get('/usuarios', (req, res) => {
 });
 
 // Ruta para obtener eventos de un día específico
-app.get('/eventos/:fecha', (req, res) => {
-  const fecha = req.params.fecha; 
-  const query = 'SELECT * FROM evento WHERE DATE(fecha_evento) = ?'; 
-  connection.query(query, [fecha], (err, results) => {
-    if (err) {
-      console.error('Error ejecutando la consulta:', err);
-      res.status(500).send('Error en la consulta');
-      return;
-    }
-    res.json(results);
-  });
-});
+app.get('/eventos/:fecha', errorHandler(async (req, res) => {
+  const fecha = req.params.fecha;
+  const [results] = await connection.promise().query('SELECT * FROM evento WHERE DATE(fecha_evento) = ?', [fecha]);
+  res.json(results);
+}));
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -214,92 +200,65 @@ app.get('/create', (req, res) => {
   res.render('create'); // Renderiza la vista de creacion
 });
 
-app.post('/create', async (req,res) =>  {
+app.post('/create', errorHandler(async (req, res) => {
   const { titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento } = req.body;
-  console.log(req.body)
   
-  const query = 'INSERT INTO evento (titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento) VALUES (?, ?, ?, ?, ?, ?, ?)';
+  const [results] = await connection.promise().query(
+    'INSERT INTO evento (titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento]
+  );
   
-  connection.query(query, [titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento], (err, results) => {
-    if (err) {
-      console.error('Error al crear evento:', err);
-      res.status(500).json({ error: 'Error al crear evento' });
-      return;
-    }
-  });
-});
+  res.json({ message: 'Evento creado con éxito', eventId: results.insertId });
+}));
 
 
 
 
 
 // Inscribir usuario a un evento desde usuario
-app.post('/inscribir-usuario/:ID_evento', async (req, res) => {
-  const data = [
-    req.user.correo_usuario,
-    req.params.ID_evento,
-    req.body.credencial_inscripcion
-  ];
-  const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');;
-  const query1 = 'UPDATE evento SET cupos_evento = cupos_evento-1 WHERE ID_evento = ?';
-  connection.query(query1, data[1], (err) => {
-    if (err) {
-      console.error('No hay cupos disponibles', err);
-      return res.status(500).send('No hay cupos disponibles');
-    }
-    const query2 = 'INSERT INTO participacion (correo_usuario, ID_evento, numero_credencial) VALUES (?, ?, ?)';
-    connection.query(query2, data, (err) => {
-      if (err) {
-        console.error('Error al inscribir al usuario:', err);
-        return res.status(500).send('Error al inscribir al usuario');
-      }
-      const query3 = 'SELECT titulo_evento, precio_evento, cupos_evento FROM evento WHERE ID_evento = ?';
-      connection.query(query3, data[1], (err, results) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).send('Error en la consulta');
-        }
-        const dataevento = [
-          results[0].titulo_evento,
-          fechaActual,
-          results[0].precio_evento,
-          "urlfalso123.com",
-          req.user.correo_usuario
-        ];
-        // Inserta la compra en la base de datos
-        const query4 = 'INSERT INTO compra (descripcion_compra, fecha_compra, monto_compra, URL_boleta_compra, correo_usuario) VALUES (?, ?, ?, ?, ?)';
-        connection.query(query4, dataevento, (err) => {
-          if (err) {
-            console.error('Error al inscribir al usuario:', err);
-            return res.status(500).send('Error al inscribir al usuario');
-          }
-          res.json({ message: 'inscripcion realizada' });
-        });
-      });
-    });
-  });
-});
+app.post('/inscribir-usuario/:ID_evento', errorHandler(async (req, res) => {
+  const { correo_usuario, credencial_inscripcion } = req.body;
+  const { ID_evento } = req.params;
+  const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+  await connection.promise().beginTransaction();
+
+  try {
+    await connection.promise().query('UPDATE evento SET cupos_evento = cupos_evento-1 WHERE ID_evento = ?', [ID_evento]);
+    
+    await connection.promise().query('INSERT INTO participacion (correo_usuario, ID_evento, numero_credencial) VALUES (?, ?, ?)', 
+      [correo_usuario, ID_evento, credencial_inscripcion]);
+
+    const [eventResults] = await connection.promise().query('SELECT titulo_evento, precio_evento FROM evento WHERE ID_evento = ?', [ID_evento]);
+    const evento = eventResults[0];
+
+    await connection.promise().query('INSERT INTO compra (descripcion_compra, fecha_compra, monto_compra, URL_boleta_compra, correo_usuario) VALUES (?, ?, ?, ?, ?)',
+      [evento.titulo_evento, fechaActual, evento.precio_evento, "urlfalso123.com", correo_usuario]);
+
+    await connection.promise().commit();
+    res.json({ message: 'Inscripción realizada con éxito' });
+  } catch (error) {
+    await connection.promise().rollback();
+    throw error;
+  }
+}));
 
 
 // Crear un nuevo usuario
-app.post('/crear-usuario', (req, res) => {
+app.post('/crear-usuario', errorHandler(async (req, res) => {
   const { nombre_usuario, correo_usuario, tipo_usuario } = req.body;
 
   if (!nombre_usuario || !correo_usuario || typeof tipo_usuario !== 'number') {
-    res.status(400).json({ error: 'Todos los campos son requeridos y tipo_usuario debe ser un número' });
-    return;
+    throw new Error('Todos los campos son requeridos y tipo_usuario debe ser un número');
   }
 
-  const query = 'INSERT INTO usuario (nombre_usuario, correo_usuario, tipo_usuario) VALUES (?, ?, ?)';
-  connection.query(query, [nombre_usuario, correo_usuario, tipo_usuario], (err, results) => {
-    if (err) {
-      console.error('Error al crear usuario:', err);
-      res.status(500).json({ error: 'Error al crear usuario' });
-      return;
-    }
-    res.json({ message: 'Usuario creado correctamente', userId: results.insertId });
-  });
-});
+  const [results] = await connection.promise().query(
+    'INSERT INTO usuario (nombre_usuario, correo_usuario, tipo_usuario) VALUES (?, ?, ?)',
+    [nombre_usuario, correo_usuario, tipo_usuario]
+  );
+
+  res.json({ message: 'Usuario creado correctamente', userId: results.insertId });
+}));
 
 // Eliminar una cuenta de usuario
 app.delete('/eliminar-usuario/:correo_usuario', (req, res) => {
