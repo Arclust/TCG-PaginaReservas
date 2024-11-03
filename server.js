@@ -179,20 +179,6 @@ connection.connect((err) => {
   console.log('Conectado a la base de datos');
 });
 
-//Obtener los eventos de una fecha especifica
-app.get('/eventos/:fecha', (req, res) => {
-  const fecha = req.params.fecha; 
-  const query = 'SELECT * FROM evento WHERE DATE(fecha_evento) = ?'; 
-  connection.query(query, [fecha], (err, results) => {
-    if (err) {
-      console.error('Error ejecutando la consulta:', err);
-      res.status(500).send('Error en la consulta');
-      return;
-    }
-    res.json(results);
-  });
-});
-
 
 // Ruta para obtener todos los usuarios de la tabla 'usuario'
 app.get('/usuarios', (req, res) => {
@@ -222,21 +208,6 @@ app.get('/eventos/:fecha', (req, res) => {
   });
 });
 
-// Inscribir usuario a un evento desde admin
-app.post('/inscribir/:ID_evento', (req, res) => {
-  const { correo_usuario, ID_evento } = req.body;
-  
-  const query = 'INSERT INTO participacion (correo_usuario, ID_evento) VALUES (?, ?)';
-  connection.query(query, [correo_usuario, ID_evento], (err, results) => {
-    if (err) {
-      console.error('Error al inscribir usuario:', err);
-      res.status(500).json({ error: 'Error al inscribir usuario' });
-      return;
-    }
-    res.json({ message: 'Usuario inscrito correctamente' });
-  });
-});
-
 app.use(express.urlencoded({ extended: false }));
 
 app.get('/create', (req, res) => {
@@ -255,9 +226,12 @@ app.post('/create', async (req,res) =>  {
       res.status(500).json({ error: 'Error al crear evento' });
       return;
     }
-    res.json({ message: 'Evento creado correctamente' });
   });
 });
+
+
+
+
 
 // Inscribir usuario a un evento desde usuario
 app.post('/inscribir-usuario/:ID_evento', async (req, res) => {
@@ -266,37 +240,46 @@ app.post('/inscribir-usuario/:ID_evento', async (req, res) => {
     req.params.ID_evento,
     req.body.credencial_inscripcion
   ];
-  console.log(data);
-
-  // Inserta la participación en la base de datos
-  const query = 'INSERT INTO participacion (correo_usuario, ID_evento, numero_credencial) VALUES (?, ?, ?)';
-  connection.query(query, data, (err) => {
+  const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');;
+  const query1 = 'UPDATE evento SET cupos_evento = cupos_evento-1 WHERE ID_evento = ?';
+  connection.query(query1, data[1], (err) => {
     if (err) {
-      console.error('Error al inscribir al usuario:', err);
-      return res.status(500).send('Error al inscribir al usuario');
+      console.error('No hay cupos disponibles', err);
+      return res.status(500).send('No hay cupos disponibles');
     }
-
-    // Redirige o muestra un mensaje de éxito
-    res.send('Te has inscrito exitosamente al evento.');
+    const query2 = 'INSERT INTO participacion (correo_usuario, ID_evento, numero_credencial) VALUES (?, ?, ?)';
+    connection.query(query2, data, (err) => {
+      if (err) {
+        console.error('Error al inscribir al usuario:', err);
+        return res.status(500).send('Error al inscribir al usuario');
+      }
+      const query3 = 'SELECT titulo_evento, precio_evento, cupos_evento FROM evento WHERE ID_evento = ?';
+      connection.query(query3, data[1], (err, results) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send('Error en la consulta');
+        }
+        const dataevento = [
+          results[0].titulo_evento,
+          fechaActual,
+          results[0].precio_evento,
+          "urlfalso123.com",
+          req.user.correo_usuario
+        ];
+        // Inserta la compra en la base de datos
+        const query4 = 'INSERT INTO compra (descripcion_compra, fecha_compra, monto_compra, URL_boleta_compra, correo_usuario) VALUES (?, ?, ?, ?, ?)';
+        connection.query(query4, dataevento, (err) => {
+          if (err) {
+            console.error('Error al inscribir al usuario:', err);
+            return res.status(500).send('Error al inscribir al usuario');
+          }
+          res.json({ message: 'inscripcion realizada' });
+        });
+      });
+    });
   });
 });
 
-
-
-// Crear un nuevo evento
-app.post('/crear-evento', (req, res) => {
-  const { titulo_evento, descripcion_evento, juego_evento, fecha_evento } = req.body;
-  
-  const query = 'INSERT INTO evento (titulo_evento, descripcion_evento, juego_evento, fecha_evento) VALUES (?, ?, ?, ?)';
-  connection.query(query, [titulo_evento, descripcion_evento, juego_evento, fecha_evento], (err, results) => {
-    if (err) {
-      console.error('Error al crear evento:', err);
-      res.status(500).json({ error: 'Error al crear evento' });
-      return;
-    }
-    res.json({ message: 'Evento creado correctamente' });
-  });
-});
 
 // Crear un nuevo usuario
 app.post('/crear-usuario', (req, res) => {

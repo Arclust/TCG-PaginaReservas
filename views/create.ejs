@@ -36,15 +36,25 @@
             
                     <textarea class="controls" id="descripcion_evento" name="descripcion_evento" placeholder="Bases del evento"required></textarea><br><br>
 
-                    <label for="fecha_evento">Fecha:</label>
-                    <input class="controls" type="date" id="fecha_evento" name="fecha_evento" required><br><br>
+                    <input class="controls" type="datetime-local" id="fecha_evento" placeholder="Fecha y hora del evento" name="fecha_evento" required><br><br>
+                    <span id="fechaError" class="error"></span>
+                    <script>
+                        const input = document.getElementById('fecha_evento');
+                        const now = new Date();
+                        const year = now.getFullYear();
+                        const month = String(now.getMonth() + 1).padStart(2, '0');
+                        const day = String(now.getDate()).padStart(2, '0');
+                        const hours = String(now.getHours()).padStart(2, '0');
+                        const minutes = String(now.getMinutes()).padStart(2, '0');
+                        const currentDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+                        input.min = currentDateTime;
+                    </script>
 
-                    <label for="fecha_evento">hora inicio:</label>
-                    <input class="controls" type="time" id="fecha_evento" name="fecha_evento" required><br><br>
-
-                    <input class="controls" type="number" id="cupos_evento" name="cupos_evento" placeholder="Cupos"required><br><br>
+                    <input class="controls" type="number" id="cupos_evento" name="cupos_evento" placeholder="Cupos" min="0" required><br><br>
+                    <span id="numeroError" class="error"></span>
                     
-                    <input class="controls" type="number" id="precio_evento" name="precio_evento" placeholder="Precio"required><br><br>
+                    <input class="controls" type="number" id="precio_evento" name="precio_evento" placeholder="Precio" min="0" required><br><br>
+                    <span id="numeroError" class="error"></span>
 
                     <label for="repetir_evento">¿Repetir semanalmente?</label>
                     <select class="controls" id="text" name="repetir_evento" required>
