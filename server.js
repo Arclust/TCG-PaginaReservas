@@ -201,40 +201,125 @@ app.get('/create', (req, res) => {
 });
 
 app.post('/create', errorHandler(async (req, res) => {
-  const { titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento } = req.body;
-  
-  const [results] = await connection.promise().query(
-    'INSERT INTO evento (titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento]
-  );
-  
-  res.json({ message: 'Evento creado con éxito', eventId: results.insertId });
+  // Verificar autenticación
+  if (!req.isAuthenticated()) {
+    throw new Error('No autorizado');
+  }
+
+  const { 
+    titulo_evento, 
+    juego_evento, 
+    descripcion_evento, 
+    fecha_evento, 
+    cupos_evento, 
+    precio_evento, 
+    repetir_evento 
+  } = req.body;
+
+  // Validación de campos requeridos
+  if (!titulo_evento || !juego_evento || !fecha_evento || !cupos_evento || !precio_evento) {
+    throw new Error('Todos los campos son requeridos');
+  }
+
+  try {
+    // Convertir la fecha string a objeto Date
+    const fechaInicial = new Date(fecha_evento);
+    const fechasEventos = [];
+
+    // Si repetir_evento es '1', crear eventos para todas las semanas del mes
+    if (repetir_evento === '1') {
+      const ultimoDiaMes = new Date(fechaInicial.getFullYear(), fechaInicial.getMonth() + 1, 0);
+      let fechaActual = new Date(fechaInicial);
+
+      while (fechaActual <= ultimoDiaMes) {
+        fechasEventos.push(new Date(fechaActual));
+        fechaActual.setDate(fechaActual.getDate() + 7);
+      }
+
+      // Crear una consulta para insertar múltiples eventos
+      const query = 'INSERT INTO evento (titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento) VALUES ?';
+      
+      // Preparar los valores para la inserción múltiple
+      const valores = fechasEventos.map(fecha => [
+        titulo_evento,
+        juego_evento,
+        descripcion_evento,
+        fecha.toISOString().slice(0, 19).replace('T', ' '), // Formato MySQL datetime
+        cupos_evento,
+        precio_evento
+      ]);
+
+      const [results] = await connection.promise().query(query, [valores]);
+      
+      res.status(201).json({ 
+        message: `Eventos creados correctamente. Se crearon ${fechasEventos.length} eventos.`,
+        eventosCreados: fechasEventos.length
+      });
+
+    } else {
+      // Si no se repite, crear un solo evento
+      const query = 'INSERT INTO evento (titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento) VALUES (?, ?, ?, ?, ?, ?)';
+      
+      const [result] = await connection.promise().query(query, [
+        titulo_evento,
+        juego_evento,
+        descripcion_evento,
+        fechaInicial.toISOString().slice(0, 19).replace('T', ' '),
+        cupos_evento,
+        precio_evento
+      ]);
+
+      res.status(201).json({ 
+        message: 'Evento creado correctamente',
+        eventoId: result.insertId
+      });
+    }
+  } catch (error) {
+    console.error('Error al crear evento(s):', error);
+    throw new Error('Error al crear evento(s): ' + error.message);
+  }
 }));
-
-
-
 
 
 // Inscribir usuario a un evento desde usuario
 app.post('/inscribir-usuario/:ID_evento', errorHandler(async (req, res) => {
-  const { correo_usuario, credencial_inscripcion } = req.body;
   const { ID_evento } = req.params;
+  const { credencial_inscripcion } = req.body;
+
+  // Verifica que el usuario esté autenticado y que su correo esté disponible
+  if (!req.user || !req.user.correo_usuario) {
+    return res.status(400).json({ error: 'Usuario no autenticado o correo no disponible' });
+  }
+
+  const correo_usuario = req.user.correo_usuario; // Obtiene el correo del usuario autenticado
   const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
   await connection.promise().beginTransaction();
 
   try {
-    await connection.promise().query('UPDATE evento SET cupos_evento = cupos_evento-1 WHERE ID_evento = ?', [ID_evento]);
-    
-    await connection.promise().query('INSERT INTO participacion (correo_usuario, ID_evento, numero_credencial) VALUES (?, ?, ?)', 
-      [correo_usuario, ID_evento, credencial_inscripcion]);
+    // Reducir el número de cupos en el evento
+    await connection.promise().query('UPDATE evento SET cupos_evento = cupos_evento - 1 WHERE ID_evento = ?', [ID_evento]);
 
-    const [eventResults] = await connection.promise().query('SELECT titulo_evento, precio_evento FROM evento WHERE ID_evento = ?', [ID_evento]);
+    // Insertar registro en la tabla de participación
+    await connection.promise().query(
+      'INSERT INTO participacion (correo_usuario, ID_evento, numero_credencial) VALUES (?, ?, ?)',
+      [correo_usuario, ID_evento, credencial_inscripcion]
+    );
+
+    // Obtener detalles del evento para crear la compra
+    const [eventResults] = await connection.promise().query(
+      'SELECT titulo_evento, precio_evento FROM evento WHERE ID_evento = ?', 
+      [ID_evento]
+    );
     const evento = eventResults[0];
 
-    await connection.promise().query('INSERT INTO compra (descripcion_compra, fecha_compra, monto_compra, URL_boleta_compra, correo_usuario) VALUES (?, ?, ?, ?, ?)',
-      [evento.titulo_evento, fechaActual, evento.precio_evento, "urlfalso123.com", correo_usuario]);
+    // Insertar registro en la tabla de compra
+    await connection.promise().query(
+      'INSERT INTO compra (descripcion_compra, fecha_compra, monto_compra, URL_boleta_compra, correo_usuario) VALUES (?, ?, ?, ?, ?)',
+      [evento.titulo_evento, fechaActual, evento.precio_evento, "urlfalso123.com", correo_usuario]
+    );
 
+    // Confirmar la transacción
     await connection.promise().commit();
     res.json({ message: 'Inscripción realizada con éxito' });
   } catch (error) {
@@ -242,6 +327,7 @@ app.post('/inscribir-usuario/:ID_evento', errorHandler(async (req, res) => {
     throw error;
   }
 }));
+
 
 
 // Crear un nuevo usuario
