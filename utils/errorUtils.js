@@ -3,7 +3,7 @@ const errorHandler = (fn) => async (req, res, next) => {
         // Verificar autenticación antes de ejecutar la función principal
         if (!req.isAuthenticated || !req.isAuthenticated()) {
             return res.status(401).json({ 
-                error: 'No autorizado' 
+                error: 'Inicie sesion para usar esta funcion.' 
             });
         }
 
