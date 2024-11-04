@@ -1,9 +1,16 @@
 const errorHandler = (fn) => async (req, res, next) => {
     try {
+        // Verificar autenticación antes de ejecutar la función principal
+        if (!req.isAuthenticated || !req.isAuthenticated()) {
+            return res.status(401).json({ 
+                error: 'No autorizado' 
+            });
+        }
+
         await fn(req, res, next);
     } catch (error) {
         console.error('Error:', error);
-        
+
         // Errores específicos de la base de datos
         if (error.code) {
             switch (error.code) {
@@ -15,18 +22,20 @@ const errorHandler = (fn) => async (req, res, next) => {
                     return res.status(400).json({ 
                         error: 'Referencia inválida' 
                     });
+                case 'ER_BAD_FIELD_ERROR':
+                    return res.status(400).json({ 
+                        error: 'Campo de base de datos inválido' 
+                    });
+                case 'ER_PARSE_ERROR':
+                    return res.status(400).json({ 
+                        error: 'Error de sintaxis en la consulta' 
+                    });
                 default:
                     return res.status(500).json({ 
-                        error: 'Error en la base de datos' 
+                        error: 'Error en la base de datos',
+                        message: process.env.NODE_ENV === 'development' ? error.message : undefined
                     });
             }
-        }
-
-        // Errores de autenticación
-        if (!req.isAuthenticated()) {
-            return res.status(401).json({ 
-                error: 'No autorizado' 
-            });
         }
 
         // Error general

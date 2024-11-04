@@ -204,18 +204,43 @@ for (let day = 1; day <= daysInMonth; day++) {
     });*/
 
     // Agregar evento de clic a los botones de inscribir evento
-  document.querySelectorAll('.inscribir-evento').forEach(function(button) {
-    button.addEventListener('click', function() {
-      const idEvento = button.dataset.idEvento;
-      $.post('/inscribir-usuario/' + idEvento, function(data) {
-        if (data.error) {
-          console.error('Error al inscribir usuario:', data.error);
-        } else {
-          console.log('Usuario inscrito correctamente');
-        }
+    document.querySelectorAll('.inscribir-evento').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          const idEvento = this.dataset.idEvento;
+          const credencialSelect = document.querySelector('#credencial-select-' + idEvento);
+          
+          if (!credencialSelect || !credencialSelect.value) {
+            alert('Por favor seleccione una credencial');
+            return;
+          }
+    
+          const credencialInscripcion = credencialSelect.value;
+    
+          fetch('/inscribir-usuario/' + idEvento, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ credencial_inscripcion: credencialInscripcion }),
+            credentials: 'include' // Importante para incluir las cookies de sesión
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.error) {
+              throw new Error(data.error);
+            }
+            alert(data.message || 'Inscripción realizada con éxito');
+            if (data.redirect) {
+              window.location.href = data.redirect;
+            }
+          })
+          .catch(error => {
+            console.error('Error al inscribir usuario:', error);
+            alert('Error al inscribir: ' + error.message);
+          });
+        });
       });
-    });
-  });
 
     // Funcionalidad para el botón "Administrar Cuentas"
     botonAdministrarCuentas.addEventListener('click', function() {

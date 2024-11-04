@@ -201,24 +201,99 @@ app.get('/create', (req, res) => {
 });
 
 app.post('/create', errorHandler(async (req, res) => {
-  const { titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento } = req.body;
+  // Verificar autenticación
+  if (!req.isAuthenticated()) {
+    throw new Error('No autorizado');
+  }
+
+  const { 
+    titulo_evento, 
+    juego_evento, 
+    descripcion_evento, 
+    fecha_evento, 
+    cupos_evento, 
+    precio_evento, 
+    repetir_evento 
+  } = req.body;
+
+  // Validación de campos requeridos
+  if (!titulo_evento || !juego_evento || !fecha_evento || !cupos_evento || !precio_evento) {
+    throw new Error('Todos los campos son requeridos');
+  }
+
+  // Convertir la fecha string a objeto Date
+  const fechaInicial = new Date(fecha_evento);
   
-  const [results] = await connection.promise().query(
-    'INSERT INTO evento (titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento, repetir_evento]
-  );
-  
-  res.json({ message: 'Evento creado con éxito', eventId: results.insertId });
+  // Si repetir_evento es 1, crear eventos para todas las semanas del mes
+  if (repetir_evento === '1') {
+    // Obtener el último día del mes
+    const ultimoDiaMes = new Date(fechaInicial.getFullYear(), fechaInicial.getMonth() + 1, 0);
+    
+    // Array para almacenar todas las fechas
+    const fechasEventos = [];
+    let fechaActual = new Date(fechaInicial);
+
+    // Mientras estemos en el mismo mes, añadir fechas semanalmente
+    while (fechaActual <= ultimoDiaMes) {
+      fechasEventos.push(new Date(fechaActual));
+      // Añadir 7 días para la siguiente semana
+      fechaActual.setDate(fechaActual.getDate() + 7);
+    }
+
+    // Crear una consulta para insertar múltiples eventos
+    const query = 'INSERT INTO evento (titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento) VALUES ?';
+    
+    // Preparar los valores para la inserción múltiple
+    const valores = fechasEventos.map(fecha => [
+      titulo_evento,
+      juego_evento,
+      descripcion_evento,
+      fecha.toISOString().slice(0, 19).replace('T', ' '), // Formato MySQL datetime
+      cupos_evento,
+      precio_evento
+    ]);
+
+    // Usar promesas para manejar la consulta
+    const [results] = await connection.promise().query(query, [valores]);
+    
+    res.status(201).json({ 
+      message: `Eventos creados correctamente. Se crearon ${fechasEventos.length} eventos.`,
+      eventosCreados: fechasEventos.length
+    });
+
+  } else {
+    // Si no se repite, crear un solo evento
+    const query = 'INSERT INTO evento (titulo_evento, juego_evento, descripcion_evento, fecha_evento, cupos_evento, precio_evento) VALUES (?, ?, ?, ?, ?, ?)';
+    
+    const [result] = await connection.promise().query(query, [
+      titulo_evento,
+      juego_evento,
+      descripcion_evento,
+      fechaInicial.toISOString().slice(0, 19).replace('T', ' '),
+      cupos_evento,
+      precio_evento
+    ]);
+
+    res.status(201).json({ 
+      message: 'Evento creado correctamente',
+      eventoId: result.insertId
+    });
+  }
 }));
-
-
-
 
 
 // Inscribir usuario a un evento desde usuario
 app.post('/inscribir-usuario/:ID_evento', errorHandler(async (req, res) => {
-  const { correo_usuario, credencial_inscripcion } = req.body;
+
   const { ID_evento } = req.params;
+  const { credencial_inscripcion } = req.body;
+
+  // Verifica que el usuario esté autenticado y el correo esté disponible
+  if (!req.user || !req.user.correo_usuario) {
+    return res.status(400).json({ error: 'Usuario no autenticado o correo no disponible' });
+  }
+
+  const correo_usuario = req.user.correo_usuario; // Obtiene el correo del usuario autenticado
   const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
   await connection.promise().beginTransaction();
@@ -242,6 +317,7 @@ app.post('/inscribir-usuario/:ID_evento', errorHandler(async (req, res) => {
     throw error;
   }
 }));
+
 
 
 // Crear un nuevo usuario
