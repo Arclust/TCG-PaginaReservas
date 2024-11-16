@@ -11,7 +11,7 @@ const ejs = require('ejs');
 const authRoutes = require('./routes/auth-routes.js');
 const { connect } = require('http2');
 const { errorHandler } = require('./utils/errorUtils');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8888;
 
 var permisos = false;
 // Crear una instancia de la aplicación Express
@@ -38,7 +38,7 @@ app.use(passport.session());
 passport.use(new GoogleStrategy({
     clientID: '842226429616-i1955a95lr4co6b2b8hi2p4si1a9vdgi.apps.googleusercontent.com',
     clientSecret: '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',
-    callbackURL: "http://localhost:3000/auth/google/callback" // Asegúrate de que el callback esté correcto
+    callbackURL: "http://localhost:8888/auth/google/callback" // Asegúrate de que el callback esté correcto
   },
   
   function(accessToken, refreshToken, profile, done) {
@@ -429,7 +429,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Iniciar el servidor en el puerto 3000
+// Iniciar el servidor en el puerto 8888
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
