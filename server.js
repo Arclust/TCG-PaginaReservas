@@ -11,7 +11,7 @@ const ejs = require('ejs');
 const authRoutes = require('./routes/auth-routes.js');
 const { connect } = require('http2');
 const { errorHandler } = require('./utils/errorUtils');
-const PORT = 3000;
+const port = process.env.PORT || 4000;
 
 var permisos = false;
 // Crear una instancia de la aplicación Express
@@ -434,8 +434,8 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar el servidor en el puerto 8888
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Servidor corriendo en el puerto ${port}`);
 });
 
 app.get('/credenciales', async (req, res) => {
