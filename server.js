@@ -38,7 +38,7 @@ app.use(passport.session());
 passport.use(new GoogleStrategy({
     clientID: '842226429616-i1955a95lr4co6b2b8hi2p4si1a9vdgi.apps.googleusercontent.com',
     clientSecret: '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',
-    callbackURL: "https://tcg-paginareservas.onrender.com//auth/google/callback" // Asegúrate de que el callback esté correcto
+    callbackURL: "https://tcg-paginareservas.onrender.com/auth/google/callback" // Asegúrate de que el callback esté correcto
   },
   
   function(accessToken, refreshToken, profile, done) {
