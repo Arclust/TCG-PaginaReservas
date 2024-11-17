@@ -82,10 +82,15 @@ passport.use(new GoogleStrategy({
   }
 ));
 
+function isUserLoggedIn(req) {
+  return req.isAuthenticated();
+}
+
 
 // Ruta de prueba para verificar que el servidor esté funcionando
 app.get('/', (req, res) => {
-  if (req.isAuthenticated() &&  req.user.tipo_usuario==1){
+  const isLoggedIn = isUserLoggedIn(req);
+  if (isLoggedIn &&  req.user.tipo_usuario==1){
     permisos = true;
   } else {
     permisos = false;
