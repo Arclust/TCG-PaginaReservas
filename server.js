@@ -157,10 +157,11 @@ app.get('/logout', (req, res) => {
 
 // Configurar la conexión a la base de datos MySQL
 const connection = mysql.createConnection({
-  host: 'localhost',     
-  user: 'root',          
-  password: 'jajablabla123',
-  database: 'tcg-reservasdb'
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
 });
 
 // Conectar a la base de datos
@@ -171,6 +172,9 @@ connection.connect((err) => {
   }
   console.log('Conectado a la base de datos');
 });
+
+
+module.exports = connection;
 
 
 // Ruta para obtener todos los usuarios de la tabla 'usuario'
