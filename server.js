@@ -355,6 +355,24 @@ app.post('/crear-usuario', errorHandler(async (req, res) => {
   res.json({ message: 'Usuario creado correctamente', userId: results.insertId });
 }));
 
+// Endpoint para añadir credenciales a un usuario
+app.post('/add-credencial', (req, res) => {
+  const { juego_credencial, numero_credencial, correo_usuario } = req.body;
+
+  if (!juego_credencial || !numero_credencial || !correo_usuario) {
+      return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
+  }
+
+  const query = 'INSERT INTO credencial (juego_credencial, numero_credencial, correo_usuario) VALUES (?, ?, ?)';
+  db.query(query, [juego_credencial, numero_credencial, correo_usuario], (err, results) => {
+      if (err) {
+          console.error('Error al insertar la credencial:', err);
+          return res.status(500).json({ message: 'Error al insertar la credencial.' });
+      }
+      res.status(200).json({ message: 'Credencial agregada exitosamente.', data: results });
+  });
+});
+
 // Eliminar una cuenta de usuario
 app.delete('/eliminar-usuario/:correo_usuario', (req, res) => {
   const correo_usuario = req.params.correo_usuario;

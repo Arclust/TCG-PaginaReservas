@@ -33,6 +33,33 @@
             background-color: #de8383;
             color: #333;
         }
+
+        .contenedor-credencial {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #add-credential-form {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #add-credential-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        #add-credential-button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -73,6 +100,23 @@
                     <p><%= credenciales[i].numero_credencial %></p>
                 </div>
             <% } %>
+
+            <!-- Botón para añadir credencial -->
+            <button id="add-credential-button">Añadir Credencial</button>
+
+            <!-- Formulario para añadir credencial -->
+            <form id="add-credential-form" style="display: none;" method="POST" action="/add-credencial">
+                <label for="juego_credencial">Juego:</label>
+                <input type="text" id="juego_credencial" name="juego_credencial" required>
+
+                <label for="numero_credencial">Número de Credencial:</label>
+                <input type="text" id="numero_credencial" name="numero_credencial" required>
+
+                <label for="correo_usuario">Correo Electrónico:</label>
+                <input type="email" id="correo_usuario" name="correo_usuario" required>
+
+                <button type="submit">Enviar</button>
+            </form>
         </div>
     </div>
     <div class="contenedor-interfaz">
@@ -87,5 +131,12 @@
             <% } %>
         </div>
     </div>
+    <script>
+        // Mostrar y ocultar el formulario
+        document.getElementById('add-credential-button').addEventListener('click', () => {
+            const form = document.getElementById('add-credential-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        });
+    </script>
 </body>
 </html>
