@@ -17,22 +17,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth(); // Enero es 0, Diciembre es 11
-    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const monthNames = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio',
+        'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
 
-    // Actualizar el título del calendario con el mes y año actual
+    // Actualizar el título del calendario
     calendarTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
 
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // Obtiene la cantidad de días del mes actual
-    const startDay = new Date(currentYear, currentMonth, 1).getDay(); // Primer día del mes (0 = domingo, 6 = sábado)
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // Días del mes
+    const startDay = new Date(currentYear, currentMonth, 1).getDay(); // Primer día del mes (0-6)
 
-    // Rellenar días vacíos antes del primer día del mes
+    // Rellenar días vacíos antes del inicio del mes
     for (let i = 0; i < (startDay === 0 ? 6 : startDay - 1); i++) {
         const emptyElement = document.createElement("div");
         emptyElement.className = "day empty";
         calendar.appendChild(emptyElement);
     }
 
-    // Crear los días del calendario
+    // Crear días del mes
     for (let day = 1; day <= daysInMonth; day++) {
         const dayElement = document.createElement("div");
         dayElement.className = "day";
@@ -40,31 +43,29 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
+        // Verificar si hay eventos futuros
         fetch(`${API_BASE_URL}/eventos/${selectedDate}`)
-        .then(response => response.json())
-        .then(data => {
-            // Filtrar eventos futuros
-            const eventosFuturos = data.filter(evento => {
-                const fechaEvento = new Date(evento.fecha_evento);
-                fechaEvento.setHours(0, 0, 0, 0); // Ignorar horas para la comparación
-                return fechaEvento >= today;
-            });
+            .then(response => response.json())
+            .then(data => {
+                const eventosFuturos = data.filter(evento => {
+                    const fechaEvento = new Date(evento.fecha_evento);
+                    fechaEvento.setHours(0, 0, 0, 0);
+                    return fechaEvento >= today;
+                });
 
-            if (eventosFuturos.length > 0) {
-                dayElement.classList.add('event-day'); // Añadir clase si hay eventos futuros
-            }
-        })
-        .catch(err => {
-            console.error('Error fetching data:', err);
-        });
+                if (eventosFuturos.length > 0) {
+                    dayElement.classList.add("event-day");
+                }
+            })
+            .catch(err => console.error("Error fetching events:", err));
 
-        dayElement.addEventListener("click", function() {
+        // Añadir evento de clic al día
+        dayElement.addEventListener("click", () => {
             fetch(`${API_BASE_URL}/eventos/${selectedDate}`)
                 .then(response => response.json())
                 .then(data => {
-                    eventList.innerHTML = '';  // Limpiar eventos previos
+                    eventList.innerHTML = ""; // Limpiar lista de eventos
 
-                    // Filtrar eventos futuros
                     const eventosFuturos = data.filter(evento => {
                         const fechaEvento = new Date(evento.fecha_evento);
                         fechaEvento.setHours(0, 0, 0, 0);
@@ -74,36 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (eventosFuturos.length > 0) {
                         eventosFuturos.forEach(evento => {
                             const eventItem = document.createElement("li");
-                            eventItem.textContent = `${evento.titulo_evento}`;
-                            eventItem.style.paddingLeft = '20px';
-
-                            // Crear botón de ver detalles del evento
-                            const button = document.createElement("button");
-                            button.className = "boton-enlace";
-                            button.textContent = "Ver detalles";
-                            button.style.float = "right";
-                            button.style.marginRight = '2%';
-                            button.dataset.idEvento = evento.ID_evento; // Establecer el ID del evento en el atributo data-id-evento
-
-                            // Agregar evento de clic al botón de inscripción
-                            button.addEventListener("click", function() {
-                                fetch(`${API_BASE_URL}/evento/${evento.ID_evento}`, {
-                                    method: 'get'
-                                })
-                                .then(response => {
-                                    if (response.ok) {
-                                        window.location.href = `${API_BASE_URL}/evento/${evento.ID_evento}`;
-                                    } else {
-                                        console.error('Error al realizar la solicitud');
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error de red:', error);
-                                });
-                            });
-
-                            // Agregar el botón de inscripción al elemento del evento
-                            eventItem.appendChild(button);
+                            eventItem.textContent = evento.titulo_evento;
                             eventList.appendChild(eventItem);
                         });
                     } else {
@@ -112,12 +84,10 @@ document.addEventListener("DOMContentLoaded", function() {
                         eventList.appendChild(noEvents);
                     }
                 })
-                .catch(err => {
-                    console.error('Error fetching data:', err);
-                });
+                .catch(err => console.error("Error fetching events:", err));
         });
 
-        calendar.appendChild(dayElement);
+        calendar.appendChild(dayElement); // Asegurar que los días se agreguen siempre
     }
 
     // Funcionalidad para el botón "Inscribir a un Evento"
@@ -190,3 +160,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     console.error('Error al eliminar la cuenta:', error);
                 });
             }
+        }
+    });
+});
