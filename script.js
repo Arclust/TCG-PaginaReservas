@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const botonInscribirEvento = document.getElementById('BotonInscribirEvento');
     const botonCrearEvento = document.getElementById('BotonCrearEvento');
     const botonAdministrarCuentas = document.getElementById('BotonAdministrarCuentas');
+    const API_BASE_URL = "https://tcg-paginareservas.onrender.com";
+
 
 
     // Obtener la fecha actual del sistema
@@ -38,7 +40,7 @@ for (let day = 1; day <= daysInMonth; day++) {
 
     const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-    fetch(`http://localhost:3000/eventos/${selectedDate}`)
+    fetch(`${API_BASE_URL}/eventos/${selectedDate}`)
     .then(response => response.json())
     .then(data => {
         if (data.length > 0) {
@@ -52,7 +54,7 @@ for (let day = 1; day <= daysInMonth; day++) {
     dayElement.addEventListener("click", function() {
         
 
-        fetch(`http://localhost:3000/eventos/${selectedDate}`)
+        fetch(`${API_BASE_URL}/eventos/${selectedDate}`)
             .then(response => response.json())
             .then(data => {
                 eventList.innerHTML = '';  // Limpiar eventos previos
@@ -73,12 +75,12 @@ for (let day = 1; day <= daysInMonth; day++) {
 
                         // Agregar evento de clic al botón de inscripción
                         button.addEventListener("click", function() {
-                            fetch(`http://localhost:3000/evento/${evento.ID_evento}`, {
+                            fetch(`${API_BASE_URL}/evento/${evento.ID_evento}`, {
                                 method: 'get'
                             }) // Obtener datos del usuario autenticado
                                 .then(response => {
                                     if (response.ok) {
-                                         window.location.href = `http://localhost:3000/evento/${evento.ID_evento}`;
+                                         window.location.href = `${API_BASE_URL}/evento/${evento.ID_evento}`;
                                     } else {
                                         console.error('Error al realizar la solicitud');
                                     }
@@ -91,7 +93,7 @@ for (let day = 1; day <= daysInMonth; day++) {
                                     const correo_usuario = user.correo_usuario; // Obtener el correo del usuario autenticado
 
                                     // Inscribir al usuario
-                                    fetch(`http://localhost:3000/inscribir-usuario/${evento.ID_evento}`, {
+                                    fetch(`${API_BASE_URL}/inscribir-usuario/${evento.ID_evento}`, {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json',
@@ -156,7 +158,7 @@ for (let day = 1; day <= daysInMonth; day++) {
         const correo_usuario = prompt("Ingrese el correo del usuario:");
 
         if (ID_evento && correo_usuario) {
-            fetch(`http://localhost:3000/inscribir/${ID_evento}`, {
+            fetch(`${API_BASE_URL}/inscribir/${ID_evento}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -173,35 +175,6 @@ for (let day = 1; day <= daysInMonth; day++) {
         }
     });
 
-    // Funcionalidad para el botón "Crear un Evento"
-   /* botonCrearEvento.addEventListener('click', function() {
-        var tituloEvento = window.prompt("Ingrese el título del evento:");
-        const descripcionEvento = window.prompt("Ingrese una descripción para el evento:");
-        const juegoEvento = window.prompt("Ingrese el juego del evento (ej: Digimon TCG, Dragon Ball TCG):");
-        const fechaEvento = window.prompt("Ingrese la fecha del evento en formato AAAA-MM-DD:");
-
-        if (tituloEvento && descripcionEvento && juegoEvento && fechaEvento) {
-            fetch('http://localhost:3000/crear-evento', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    titulo_evento: tituloEvento,
-                    descripcion_evento: descripcionEvento,
-                    juego_evento: juegoEvento,
-                    fecha_evento: fechaEvento
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(`Evento "${tituloEvento}" creado correctamente.`);
-            })
-            .catch(error => {
-                console.error('Error al crear el evento:', error);
-            });
-        }
-    });*/
 
     // Agregar evento de clic a los botones de inscribir evento
   document.querySelectorAll('.inscribir-evento').forEach(function(button) {
@@ -227,7 +200,7 @@ for (let day = 1; day <= daysInMonth; day++) {
             const tipo_usuario = prompt("Ingrese el tipo de usuario:")
 
             if (nombre_usuario && correo_usuario && tipo_usuario) {
-                fetch('http://localhost:3000/crear-usuario', {
+                fetch('${API_BASE_URL}/crear-usuario', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -250,7 +223,7 @@ for (let day = 1; day <= daysInMonth; day++) {
             const correo_usuario = prompt("Ingrese el correo del usuario a eliminar:");
     
             if (correo_usuario) {
-                fetch(`http://localhost:3000/eliminar-usuario/${correo_usuario}`, {
+                fetch(`${API_BASE_URL}/eliminar-usuario/${correo_usuario}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
