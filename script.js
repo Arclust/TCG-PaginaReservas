@@ -11,10 +11,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const botonAdministrarCuentas = document.getElementById('BotonAdministrarCuentas');
     const API_BASE_URL = "https://tcg-paginareservas.onrender.com";
 
-
-
     // Obtener la fecha actual del sistema
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Ignorar horas para comparar solo fechas
+
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth(); // Enero es 0, Diciembre es 11
     const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -32,125 +32,93 @@ document.addEventListener("DOMContentLoaded", function() {
         calendar.appendChild(emptyElement);
     }
 
-// Crear los días del calendario
-for (let day = 1; day <= daysInMonth; day++) {
-    const dayElement = document.createElement("div");
-    dayElement.className = "day";
-    dayElement.textContent = day;
+    // Crear los días del calendario
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement("div");
+        dayElement.className = "day";
+        dayElement.textContent = day;
 
-    const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-
-    fetch(`${API_BASE_URL}/eventos/${selectedDate}`)
-    .then(response => response.json())
-    .then(data => {
-        if (data.length > 0) {
-            dayElement.classList.add('event-day'); // Añadir clase si hay eventos
-        }
-    })
-    .catch(err => {
-        console.error('Error fetching data:', err);
-    });
-
-    dayElement.addEventListener("click", function() {
-        
+        const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
         fetch(`${API_BASE_URL}/eventos/${selectedDate}`)
-            .then(response => response.json())
-            .then(data => {
-                eventList.innerHTML = '';  // Limpiar eventos previos
-                
-                if (data.length > 0) {
-                    data.forEach(evento => {
-                        const eventItem = document.createElement("li");
-                        eventItem.textContent = `${evento.titulo_evento}`;
-                        eventItem.style.paddingLeft = '20px';
+        .then(response => response.json())
+        .then(data => {
+            // Filtrar eventos futuros
+            const eventosFuturos = data.filter(evento => {
+                const fechaEvento = new Date(evento.fecha_evento);
+                fechaEvento.setHours(0, 0, 0, 0); // Ignorar horas para la comparación
+                return fechaEvento >= today;
+            });
 
-                        // Crear botón de ver detalles del evento
-                        const button = document.createElement("button");
-                        button.className = "boton-enlace";
-                        button.textContent = "Ver detalles";
-                        button.style.float = "right";
-                        button.style.marginRight = '2%';
-                        button.dataset.idEvento = evento.ID_evento;  // Establecer el ID del evento en el atributo data-id-evento
+            if (eventosFuturos.length > 0) {
+                dayElement.classList.add('event-day'); // Añadir clase si hay eventos futuros
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching data:', err);
+        });
 
-                        // Agregar evento de clic al botón de inscripción
-                        button.addEventListener("click", function() {
-                            fetch(`${API_BASE_URL}/evento/${evento.ID_evento}`, {
-                                method: 'get'
-                            }) // Obtener datos del usuario autenticado
+        dayElement.addEventListener("click", function() {
+            fetch(`${API_BASE_URL}/eventos/${selectedDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    eventList.innerHTML = '';  // Limpiar eventos previos
+
+                    // Filtrar eventos futuros
+                    const eventosFuturos = data.filter(evento => {
+                        const fechaEvento = new Date(evento.fecha_evento);
+                        fechaEvento.setHours(0, 0, 0, 0);
+                        return fechaEvento >= today;
+                    });
+
+                    if (eventosFuturos.length > 0) {
+                        eventosFuturos.forEach(evento => {
+                            const eventItem = document.createElement("li");
+                            eventItem.textContent = `${evento.titulo_evento}`;
+                            eventItem.style.paddingLeft = '20px';
+
+                            // Crear botón de ver detalles del evento
+                            const button = document.createElement("button");
+                            button.className = "boton-enlace";
+                            button.textContent = "Ver detalles";
+                            button.style.float = "right";
+                            button.style.marginRight = '2%';
+                            button.dataset.idEvento = evento.ID_evento; // Establecer el ID del evento en el atributo data-id-evento
+
+                            // Agregar evento de clic al botón de inscripción
+                            button.addEventListener("click", function() {
+                                fetch(`${API_BASE_URL}/evento/${evento.ID_evento}`, {
+                                    method: 'get'
+                                })
                                 .then(response => {
                                     if (response.ok) {
-                                         window.location.href = `${API_BASE_URL}/evento/${evento.ID_evento}`;
+                                        window.location.href = `${API_BASE_URL}/evento/${evento.ID_evento}`;
                                     } else {
                                         console.error('Error al realizar la solicitud');
                                     }
                                 })
                                 .catch(error => {
-                                    // Manejar errores de red
                                     console.error('Error de red:', error);
                                 });
-                                /*.then(user => {
-                                    const correo_usuario = user.correo_usuario; // Obtener el correo del usuario autenticado
+                            });
 
-                                    // Inscribir al usuario
-                                    fetch(`${API_BASE_URL}/inscribir-usuario/${evento.ID_evento}`, {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({ correo_usuario: correo_usuario }),
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        alert(data.message || 'Inscripción realizada con éxito.');
-                                    })
-                                    .catch(error => {
-                                        console.error('Error al inscribir al evento:', error);
-                                    });
-                                })
-                                .catch(error => {
-                                    alert('Debes iniciar sesión para inscribirte en un evento.'); // Mensaje de error para no autenticado
-                                    console.error(error);
-                                });*/
+                            // Agregar el botón de inscripción al elemento del evento
+                            eventItem.appendChild(button);
+                            eventList.appendChild(eventItem);
                         });
+                    } else {
+                        const noEvents = document.createElement("li");
+                        noEvents.textContent = "No hay eventos para este día.";
+                        eventList.appendChild(noEvents);
+                    }
+                })
+                .catch(err => {
+                    console.error('Error fetching data:', err);
+                });
+        });
 
-                        // Agregar el botón de inscripción al elemento del evento
-                        eventItem.appendChild(button);
-
-                        // Establecer fondo basado en el tipo de evento
-                        /*switch (evento.juego_evento) {
-                            case 'Digimon TCG':
-                                eventItem.style.backgroundImage = 'url(DigimonBG.jpg)';
-                                break;
-                            case 'Dragon Ball TCG':
-                                eventItem.style.backgroundImage = 'url(DragonballBG.jpg)';
-                                break;
-                            case 'Pokemon TCG':
-                                eventItem.style.backgroundImage = 'url(PokemonBG.jpg)';
-                                break;
-                            case 'One Piece TCG':
-                                eventItem.style.backgroundImage = 'OnepieceBG.jpg)';
-                                break;
-                            default:
-                                eventItem.style.backgroundColor = '#f0f0f0'; // Fondo genérico
-                                break;
-                        }*/
-
-                        eventList.appendChild(eventItem);
-                    });
-                } else {
-                    const noEvents = document.createElement("li");
-                    noEvents.textContent = "No hay eventos para este día.";
-                    eventList.appendChild(noEvents);
-                }
-            })
-            .catch(err => {
-                console.error('Error fetching data:', err);
-            });
-    });
-            
-    calendar.appendChild(dayElement);
-}
+        calendar.appendChild(dayElement);
+    }
 
     // Funcionalidad para el botón "Inscribir a un Evento"
     botonInscribirEvento.addEventListener('click', function() {
@@ -175,21 +143,6 @@ for (let day = 1; day <= daysInMonth; day++) {
         }
     });
 
-
-    // Agregar evento de clic a los botones de inscribir evento
-  document.querySelectorAll('.inscribir-evento').forEach(function(button) {
-    button.addEventListener('click', function() {
-      const idEvento = button.dataset.idEvento;
-      $.post('/inscribir-usuario/' + idEvento, function(data) {
-        if (data.error) {
-          console.error('Error al inscribir usuario:', data.error);
-        } else {
-          console.log('Usuario inscrito correctamente');
-        }
-      });
-    });
-  });
-
     // Funcionalidad para el botón "Administrar Cuentas"
     botonAdministrarCuentas.addEventListener('click', function() {
         const action = prompt("Ingrese '1' para crear una cuenta o '2' para eliminar una cuenta:");
@@ -200,15 +153,15 @@ for (let day = 1; day <= daysInMonth; day++) {
             const tipo_usuario = prompt("Ingrese el tipo de usuario:")
 
             if (nombre_usuario && correo_usuario && tipo_usuario) {
-                fetch('${API_BASE_URL}/crear-usuario', {
+                fetch(`${API_BASE_URL}/crear-usuario`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                    nombre_usuario: nombre_usuario,
-                    correo_usuario: correo_usuario,
-                    tipo_usuario: parseInt(tipo_usuario)
+                        nombre_usuario: nombre_usuario,
+                        correo_usuario: correo_usuario,
+                        tipo_usuario: parseInt(tipo_usuario)
                     }),
                 })
                 .then(response => response.json())
@@ -221,7 +174,7 @@ for (let day = 1; day <= daysInMonth; day++) {
             }
         } else if (action === '2') {
             const correo_usuario = prompt("Ingrese el correo del usuario a eliminar:");
-    
+
             if (correo_usuario) {
                 fetch(`${API_BASE_URL}/eliminar-usuario/${correo_usuario}`, {
                     method: 'DELETE',
@@ -237,6 +190,3 @@ for (let day = 1; day <= daysInMonth; day++) {
                     console.error('Error al eliminar la cuenta:', error);
                 });
             }
-        }
-    });
-});
