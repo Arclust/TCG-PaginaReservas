@@ -364,7 +364,7 @@ app.post('/add-credencial', (req, res) => {
   }
 
   const query = 'INSERT INTO credencial (juego_credencial, numero_credencial, correo_usuario) VALUES (?, ?, ?)';
-  db.query(query, [juego_credencial, numero_credencial, correo_usuario], (err, results) => {
+  connection.query(query, [juego_credencial, numero_credencial, correo_usuario], (err, results) => {
       if (err) {
           console.error('Error al insertar la credencial:', err);
           return res.status(500).json({ message: 'Error al insertar la credencial.' });
