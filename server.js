@@ -95,7 +95,7 @@ app.get('/', (req, res) => {
   } else {
     permisos = false;
   }
-  res.render('index',{permisos});
+  res.render('index',{permisos,isLoggedIn});
 });
 
 // Serialización y deserialización del usuario para mantener la sesión
